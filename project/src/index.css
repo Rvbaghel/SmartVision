@@ -1,7 +1,14 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* This is where you define your custom colors in v4 */
+@theme {
+    --animate-bounce-slow: bounce-slow 4s infinite ease-in-out;
+
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+  }
+  --color-primary: #ff4757;   /* Change to your preferred red/pink */
+  --color-secondary: #2f3542; /* Change to your preferred dark blue */
+  --color-yellow: #ffa502;    /* Change to your preferred yellow */
+}
