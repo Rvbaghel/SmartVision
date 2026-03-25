@@ -94,7 +94,7 @@ const ArtStudio = () => {
           ))}
         </div>
 
-        {/* 3. IMAGE GALLERY */}
+        {/* 3. IMAGE GALLERY */}  
         <div className="flex gap-6 overflow-x-auto pb-6 mb-10 justify-center no-scrollbar">
           {CATEGORIES[activeCategory].map((item) => (
             <div 
