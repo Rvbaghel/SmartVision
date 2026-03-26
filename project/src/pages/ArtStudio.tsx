@@ -1,189 +1,200 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ReactSketchCanvas, type ReactSketchCanvasRef } from "react-sketch-canvas";
 import { 
-  Undo2, 
-  Trash2, 
-  CheckCircle2, 
-  Info, 
-  Pencil, 
-  Image as ImageIcon, 
-  Trophy, 
-  Apple, 
-  Dog, 
-  Rocket 
+  Undo2, Trash2, Pencil, 
+  Image as ImageIcon, Trophy, Sparkles, PenTool, BrainCircuit 
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-// Replace these with your local black & white assets for better results
 const CATEGORIES = {
-  Fruits: [
-    { name: "Apple", url: "https://i.pinimg.com/originals/8a/9b/6c/8a9b6c6b4b5b4b5b4b5b4b5b4b5b4b5b.png", icon: <Apple size={20} /> },
-    { name: "Banana", url: "https://cdn-icons-png.flaticon.com/512/2909/2909808.png", icon: <Apple size={20} /> },
-    { name: "Grapes", url: "https://cdn-icons-png.flaticon.com/512/2909/2909761.png", icon: <Apple size={20} /> }
-  ],
   Animals: [
-    { name: "Cat", url: "https://cdn-icons-png.flaticon.com/512/616/616408.png", icon: <Dog size={20} /> },
-    { name: "Dog", url: "https://cdn-icons-png.flaticon.com/512/616/616408.png", icon: <Dog size={20} /> },
-    { name: "Rabbit", url: "https://cdn-icons-png.flaticon.com/512/616/616408.png", icon: <Dog size={20} /> }
+    { name: "Cat", url: "/animals/cat.png" },
+    { name: "Dog", url: "/animals/dog.png" },
+    { name: "Elephant", url: "/animals/elephant.png" },
+    { name: "Lion", url: "/animals/lion.png" },
+    { name: "Monkey", url: "/animals/monkey.png" },
+    { name: "Panda", url: "/animals/panda.png" },
+    { name: "Penguin", url: "/animals/peguian.png" },
+    { name: "Turtle", url: "/animals/turtle.png" },
+    { name: "Zebra", url: "/animals/zebra.png" },
+  ],
+  Fruits: [
+    { name: "Apple", url: "/fruits/apple.png" },
+    { name: "Banana", url: "/fruits/banana.png" },
+    //{ name: "Mango", url: "/fruits/mango.png" },
+    // { name: "Orange", url: "/fruits/orange.png" },
+     { name: "Strawberry", url: "/fruits/strawberry.png" },
+    { name: "Grapes", url: "/fruits/grapes.png" },
+    //{ name: "Watermelon", url: "/fruits/watermelon.png" },
+    { name: "Pineapple", url: "/fruits/pineaple.png" },
+    //{ name: "Cherry", url: "/fruits/cherry.png" },
+    //{ name: "Pear", url: "/fruits/pear.png" },
   ],
   Vehicles: [
-    { name: "Car", url: "https://cdn-icons-png.flaticon.com/512/741/741407.png", icon: <Rocket size={20} /> },
-    { name: "Rocket", url: "https://cdn-icons-png.flaticon.com/512/1356/1356479.png", icon: <Rocket size={20} /> }
+    { name: "Car", url: "/vehicle/car.png" },
+    //{ name: "Rocket", url: "/vehicles/rocket.png" },
+    { name: "Bus", url: "/vehicle/bus.png" },
+    { name: "Firebrigade", url: "/vehicle/firebrigade.png" },
+    //{ name: "Airplane", url: "/vehicles/airplane.png" },
+    //{ name: "Ship", url: "/vehicles/ship.png" },
+    //{ name: "Train", url: "/vehicles/train.png" },
+    { name: "Helicopter", url: "/vehicle/helicopter.png" },
+    { name: "Truck", url: "/vehicle/truck.png" },
+    //{ name: "Scooter", url: "/vehicles/scooter.png" },
   ]
 };
 
+const PENCIL_TOOLS = [
+  { id: 'thin', name: "Fine", width: 4, icon: <PenTool size={14} /> },
+  { id: 'magic', name: "Magic", width: 8, icon: <Pencil size={16} /> },
+  { id: 'marker', name: "Super", width: 14, icon: <Sparkles size={16} /> },
+];
+
 const ArtStudio = () => {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const [activeCategory, setActiveCategory] = useState<keyof typeof CATEGORIES>("Fruits");
-  const [selectedImg, setSelectedImg] = useState(CATEGORIES.Fruits[0].url);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeCategory, setActiveCategory] = useState<keyof typeof CATEGORIES>("Animals");
+  const [selectedImg, setSelectedImg] = useState(CATEGORIES.Animals[0].url);
   const [accuracy, setAccuracy] = useState<number | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [selectedPencil, setSelectedPencil] = useState(PENCIL_TOOLS[1]);
 
-  const handleUndo = () => canvasRef.current?.undo();
+  useEffect(() => {
+    const preventScroll = (e: TouchEvent) => { if (isDrawing) e.preventDefault(); };
+    const container = containerRef.current;
+    if (container) container.addEventListener('touchmove', preventScroll, { passive: false });
+    return () => container?.removeEventListener('touchmove', preventScroll);
+  }, [isDrawing]);
+
   const handleClear = () => {
     canvasRef.current?.clearCanvas();
     setAccuracy(null);
   };
 
-  const handleSubmit = async () => {
-    const image = await canvasRef.current?.exportImage("png");
-    console.log("Image captured for AI:", image);
-    setAccuracy(Math.floor(Math.random() * 25) + 75);
-  };
-
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen flex flex-col font-sans">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-6 py-10">
+      <main className="flex-grow max-w-6xl mx-auto px-4 py-4 w-full flex flex-col gap-4">
         
-        {/* 1. HOW TO PLAY BOX */}
-        <div className="bg-white border-2 border-yellow-200 p-6 rounded-[2rem] mb-10 shadow-sm flex items-start gap-4">
-          <div className="bg-yellow-400 p-3 rounded-2xl text-white">
-            <Info size={28} />
+        {/* Compact Selector Bar */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-2.5 rounded-3xl lg:rounded-full shadow-sm border border-slate-100">
+          <div className="flex gap-1 bg-slate-50 p-1 rounded-full">
+            {Object.keys(CATEGORIES).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setActiveCategory(cat as keyof typeof CATEGORIES);
+                  setSelectedImg(CATEGORIES[cat as keyof typeof CATEGORIES][0].url);
+                  handleClear();
+                }}
+                className={`px-5 py-2 rounded-full font-black text-[10px] uppercase transition-all ${
+                  activeCategory === cat ? "bg-primary text-white shadow-md" : "text-gray-400 hover:text-secondary"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-          <div>
-            <h2 className="text-2xl font-black text-secondary mb-2 uppercase tracking-tight">How to Play?</h2>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-gray-600 font-bold italic">
-              <li>• Pick a category (Fruits, Animals, or Vehicles)</li>
-              <li>• Select a drawing to use as your reference</li>
-              <li>• Use your mouse or finger to draw the shape</li>
-              <li>• Hit "Check Art" to let the AI score your work!</li>
-            </ul>
+
+          <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-2">
+            {CATEGORIES[activeCategory].map((item) => (
+              <img 
+                key={item.name}
+                src={item.url} 
+                onClick={() => { setSelectedImg(item.url); handleClear(); }}
+                className={`h-10 w-10 object-contain p-1.5 rounded-xl cursor-pointer border-2 transition-all ${
+                  selectedImg === item.url ? "border-primary bg-red-50" : "border-transparent bg-slate-50 opacity-50 hover:opacity-100"
+                }`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* 2. CATEGORY SELECTOR */}
-        <div className="flex flex-wrap gap-4 mb-8 justify-center">
-          {Object.keys(CATEGORIES).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setActiveCategory(cat as keyof typeof CATEGORIES);
-                setSelectedImg(CATEGORIES[cat as keyof typeof CATEGORIES][0].url);
-              }}
-              className={`flex items-center gap-2 px-8 py-4 rounded-2xl font-black transition-all shadow-md active:scale-95 ${
-                activeCategory === cat ? "bg-primary text-white scale-105" : "bg-white text-gray-400 hover:text-secondary"
-              }`}
-            >
-              {cat === "Fruits" && <Apple size={20} />}
-              {cat === "Animals" && <Dog size={20} />}
-              {cat === "Vehicles" && <Rocket size={20} />}
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* 3. IMAGE GALLERY */}  
-        <div className="flex gap-6 overflow-x-auto pb-6 mb-10 justify-center no-scrollbar">
-          {CATEGORIES[activeCategory].map((item) => (
-            <div 
-              key={item.name}
-              onClick={() => setSelectedImg(item.url)}
-              className={`p-4 bg-white rounded-3xl cursor-pointer transition-all border-4 shadow-sm min-w-[140px] text-center group ${
-                selectedImg === item.url ? "border-primary bg-primary/5" : "border-transparent opacity-60 hover:opacity-100"
-              }`}
-            >
-              <img src={item.url} alt={item.name} className="h-20 w-full object-contain mb-2 group-hover:scale-110 transition-transform" />
-              <p className="font-bold text-gray-500 text-xs uppercase tracking-widest">{item.name}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* 4. GAME ARENA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Game Arena */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow">
           
-          {/* Target Card */}
-          <div className="bg-white p-10 rounded-[3.5rem] shadow-xl border-b-8 border-slate-200 flex flex-col items-center justify-center min-h-[450px]">
-            <div className="flex items-center gap-2 text-gray-400 font-black mb-8 uppercase tracking-[0.2em] text-sm">
-              <ImageIcon size={18} />
-              <span>Target Image</span>
+          {/* Reference Image */}
+          <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border-b-4 border-slate-200 flex flex-col items-center justify-center relative min-h-[300px]">
+            <div className="absolute top-4 left-6 flex items-center gap-1.5 text-slate-300 font-black uppercase tracking-widest text-[9px]">
+              <ImageIcon size={12} /> Reference
             </div>
-            <img src={selectedImg} alt="Target" className="w-full max-w-[280px] object-contain opacity-90" />
+            <img src={selectedImg} alt="Target" className="w-full max-w-[280px] max-h-[300px] object-contain drop-shadow-xl" />
           </div>
 
-          {/* Canvas Card */}
-          <div className="bg-white p-8 rounded-[3.5rem] shadow-2xl border-b-8 border-green-500 flex flex-col">
-             <div className="flex justify-between items-center mb-6 px-4 font-black text-gray-400 uppercase tracking-widest text-sm">
-                <div className="flex items-center gap-2">
-                  <Pencil size={18} />
-                  <span>Draw Here</span>
-                </div>
-                <span className="text-green-500 font-black">Ready!</span>
+          {/* Canvas Area */}
+          <div className="bg-white p-5 rounded-[2.5rem] shadow-xl border-b-4 border-green-500 flex flex-col relative">
+             <div className="flex justify-between items-center mb-3">
+                <span className="font-black text-secondary uppercase tracking-widest text-[10px] flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  Drawing Pad
+                </span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">{selectedPencil.name} Mode</span>
              </div>
              
-             <div className="flex-grow border-4 border-dashed border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50/50">
+             <div 
+                ref={containerRef}
+                className="flex-grow rounded-2xl overflow-hidden bg-slate-50 border-2 border-dashed border-slate-200 relative"
+                onMouseDown={() => setIsDrawing(true)}
+                onMouseUp={() => setIsDrawing(false)}
+             >
                 <ReactSketchCanvas
                   ref={canvasRef}
-                  strokeWidth={6}
+                  strokeWidth={selectedPencil.width} 
                   strokeColor="#1e293b"
                   canvasColor="transparent"
-                  style={{ height: "400px" }}
+                  style={{ height: "380px" }}
                 />
              </div>
 
-             {/* Game Controls */}
-             <div className="grid grid-cols-3 gap-4 mt-8">
-                <button 
-                  onClick={handleUndo} 
-                  className="flex items-center justify-center gap-2 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl hover:bg-blue-100 transition active:translate-y-1"
-                >
-                  <Undo2 size={20} />
-                  <span>Undo</span>
-                </button>
-                <button 
-                  onClick={handleClear} 
-                  className="flex items-center justify-center gap-2 py-4 bg-red-50 text-red-500 font-black rounded-2xl hover:bg-red-100 transition active:translate-y-1"
-                >
-                  <Trash2 size={20} />
-                  <span>Clear</span>
-                </button>
-                <button 
-                  onClick={handleSubmit} 
-                  className="flex items-center justify-center gap-2 py-4 bg-primary text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition active:translate-y-2 active:shadow-none"
-                >
-                  <CheckCircle2 size={20} />
-                  <span>Check Art</span>
-                </button>
+             {/* Controls */}
+             <div className="mt-4 flex flex-wrap gap-3 justify-between items-center">
+                <div className="flex gap-1.5 bg-slate-100 p-1 rounded-full">
+                   {PENCIL_TOOLS.map((tool) => (
+                      <button 
+                         key={tool.id} 
+                         onClick={() => setSelectedPencil(tool)}
+                         className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                            selectedPencil.id === tool.id ? "bg-primary text-white shadow-md" : "text-gray-400 bg-white"
+                         }`}
+                      >
+                         {tool.icon}
+                      </button>
+                   ))}
+                </div>
+
+                <div className="flex gap-2">
+                    <button onClick={() => canvasRef.current?.undo()} className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors">
+                      <Undo2 size={18} />
+                    </button>
+                    <button onClick={handleClear} className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors">
+                      <Trash2 size={18} />
+                    </button>
+                    <button 
+                      onClick={() => setAccuracy(Math.floor(Math.random() * 10) + 90)} 
+                      className="px-6 py-3 bg-primary text-white font-black rounded-xl flex items-center gap-2 shadow-[0_4px_0_0_#be123c] active:translate-y-1 active:shadow-none transition-all text-xs uppercase"
+                    >
+                      <BrainCircuit size={16} /> Check AI
+                    </button>
+                </div>
              </div>
           </div>
         </div>
 
-        {/* AI Result View */}
+        {/* Result Overlay */}
         {accuracy && (
-          <div className="mt-16 flex justify-center">
-            <div className="bg-white p-12 rounded-[4rem] shadow-2xl border-4 border-yellow-400 text-center relative overflow-hidden min-w-[320px]">
-               <div className="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
-               <div className="flex justify-center mb-4 text-yellow-500">
-                  <Trophy size={48} />
-               </div>
-               <h2 className="text-2xl font-black text-secondary uppercase tracking-[0.2em] mb-2">Masterpiece Score</h2>
-               <div className="text-8xl font-black text-primary my-4 tracking-tighter">{accuracy}%</div>
-               <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">Accuracy to Reference</p>
-            </div>
+          <div className="fixed inset-0 bg-secondary/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+             <div className="bg-white p-10 rounded-[3rem] text-center max-w-xs w-full shadow-2xl animate-in zoom-in-95 duration-200">
+                <Trophy className="mx-auto text-yellow-400 mb-4" size={60} />
+                <h2 className="text-secondary font-black uppercase text-xl">Score!</h2>
+                <div className="text-7xl font-black text-primary my-4">{accuracy}%</div>
+                <button onClick={() => setAccuracy(null)} className="w-full py-3 bg-primary text-white font-black rounded-2xl uppercase tracking-widest hover:bg-primary/90">Play Again</button>
+             </div>
           </div>
         )}
-      </div>
+      </main>
+
       <Footer />
     </div>
   );

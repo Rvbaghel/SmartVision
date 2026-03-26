@@ -40,3 +40,41 @@ const GameCard = ({ title, description, icon, color, path }: GameCardProps) => {
 };
 
 export default GameCard;
+
+// const CATEGORIES = {
+//   Animals: [
+//     { name: "Cat", url: "/animals/cat.png" },
+//     { name: "Dog", url: "/animals/dog.png" },
+//     { name: "Elephant", url: "/animals/elephant.png" },
+//     { name: "Lion", url: "/animals/lion.png" },
+//     { name: "Monkey", url: "/animals/monkey.png" },
+//     { name: "Panda", url: "/animals/panda.png" },
+//     { name: "Penguin", url: "/animals/peguian.png" }, // Adjusted to match your filename 'peguian.png'
+//     { name: "Turtle", url: "/animals/turtle.png" },
+//     { name: "Zebra", url: "/animals/zebra.png" },
+//   ],
+//   Fruits: [
+//     { name: "Apple", url: "/fruits/apple.png" },
+//     { name: "Banana", url: "/fruits/banana.png" },
+//     { name: "Mango", url: "/fruits/mango.png" },
+//     { name: "Orange", url: "/fruits/orange.png" },
+//     { name: "Strawberry", url: "/fruits/strawberry.png" },
+//     { name: "Grapes", url: "/fruits/grapes.png" },
+//     { name: "Watermelon", url: "/fruits/watermelon.png" },
+//     { name: "Pineapple", url: "/fruits/pineapple.png" },
+//     { name: "Cherry", url: "/fruits/cherry.png" },
+//     { name: "Pear", url: "/fruits/pear.png" },
+//   ],
+//   Vehicles: [
+//     { name: "Car", url: "/vehicles/car.png" },
+//     { name: "Rocket", url: "/vehicles/rocket.png" },
+//     { name: "Bus", url: "/vehicles/bus.png" },
+//     { name: "Bicycle", url: "/vehicles/bicycle.png" },
+//     { name: "Airplane", url: "/vehicles/airplane.png" },
+//     { name: "Ship", url: "/vehicles/ship.png" },
+//     { name: "Train", url: "/vehicles/train.png" },
+//     { name: "Helicopter", url: "/vehicles/helicopter.png" },
+//     { name: "Truck", url: "/vehicles/truck.png" },
+//     { name: "Scooter", url: "/vehicles/scooter.png" },
+//   ]
+// };
