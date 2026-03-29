@@ -1,0 +1,17 @@
+# env files
+.env
+.env.*
+
+# python cache
+__pycache__/
+*.pyc
+
+# virtual environment
+venv/
+.env/
+
+# logs
+*.log
+
+# database (if local)
+*.sqlite3
