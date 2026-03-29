@@ -30,14 +30,14 @@ const Home = () => {
       category: "Geometric Shape Games",
       imageUrl: shapesImg,
       color: "text-orange-500",
-      path: "/game/shapes/info"
+      path: "/games/shapes-info"
     },
     {
       title: "Sign Master",
       category: "Road Safety Games",
       imageUrl: roadSignsImg,
       color: "text-red-500",
-      path: "/game/road-signs/info"
+      path: "/games/road-signs-info"
     },
     {
       title: "Animal World",
