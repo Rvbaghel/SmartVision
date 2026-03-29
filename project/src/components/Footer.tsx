@@ -1,105 +1,117 @@
-import logo from "../assets/logo.png";
+import logo from "../assets/logo1.png";
 import { Link } from "react-router-dom";
-import { Heart, ChevronRight } from "lucide-react"; // Import Lucide icons
+import { Heart, ChevronRight, Star} from "lucide-react";
+import { FaInstagram } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-secondary text-white pt-16 pb-8 px-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+    <footer className="bg-slate-100 pt-20 pb-10 px-10 rounded-t-[4rem] mt-20 border-t-8 border-white">
+      
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         
         {/* Brand Column */}
-        <div className="col-span-1 md:col-span-1">
-          <div className="bg-white p-2 rounded-xl inline-block mb-4">
-            <img src={logo} alt="Logo" className="h-10 w-auto" />
+        <div className="flex flex-col gap-6">
+          <div className="bg-white p-4 rounded-3xl shadow-sm inline-block w-fit">
+            <img src={logo} alt="Logo" className="h-12 w-auto" />
           </div>
-          <p className="text-gray-400 font-medium">
-            Making learning an adventure for the next generation of geniuses.
+
+          <p className="text-slate-500 font-bold text-lg leading-relaxed">
+            Making learning an adventure for the next generation of geniuses! 
           </p>
+
+          {/* Social Icons */}
+          <div className="flex gap-4">
+
+            {/* Instagram */}
+            <div className="p-3 bg-white rounded-2xl shadow-sm text-pink-500 hover:scale-110 transition-transform cursor-pointer">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <FaInstagram size={24} />
+              </a>
+            </div>
+
+            {/* YouTube */}
+            <div className="p-3 bg-white rounded-2xl shadow-sm text-red-600 hover:scale-110 transition-transform cursor-pointer">
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+                <FaYoutube size={24} />
+              </a>
+            </div>
+
+          </div>
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h4 className="text-xl font-bold mb-6">Quick Links</h4>
-          <ul className="space-y-4 text-gray-400 font-medium">
-            <li>
-              <Link to="/" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link to="/activity" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                My Progress
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {/* Quick Links Group */}
+        {[
+          {
+            title: "Explore",
+            links: [
+              { name: "Home", to: "/" },
+              { name: "About Us", to: "/about" },
+              { name: "My Progress", to: "/activity" },
+            ],
+          },
+          {
+            title: "Games",
+            links: [
+              { name: "Art Studio", to: "/games/drawing-challenge" },
+              { name: "Shape Hunter", to: "/game/shapes/info" },
+              { name: "Sign Master", to: "/game/road-signs/info" },
+            ],
+          },
+          {
+            title: "Parents",
+            links: [
+              { name: "Privacy Policy", to: "/privacy" },
+              { name: "Terms of Use", to: "/terms" },
+              { name: "Contact Support", to: "/contact" },
+            ],
+          },
+        ].map((section, idx) => (
+          <div
+            key={idx}
+            className="bg-white/50 p-8 rounded-[2.5rem] border-b-4 border-slate-200"
+          >
+            <h4 className="text-xl font-black text-slate-800 mb-6 uppercase tracking-widest">
+              {section.title}
+            </h4>
 
-        {/* Games */}
-        <div>
-          <h4 className="text-xl font-bold mb-6">Popular Games</h4>
-          <ul className="space-y-4 text-gray-400 font-medium">
-            <li>
-              <Link to="/games/math-quiz" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Math Wizard
-              </Link>
-            </li>
-            <li>
-              <Link to="/games/image-recognition" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Image Hunter
-              </Link>
-            </li>
-            <li>
-              <Link to="/games/drawing-challenge" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Art Studio
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Support */}
-        <div>
-          <h4 className="text-xl font-bold mb-6">Parents</h4>
-          <ul className="space-y-4 text-gray-400 font-medium">
-            <li>
-              <Link to="/privacy" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link to="/terms" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Terms of Use
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="hover:text-primary transition flex items-center gap-2 group">
-                <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                Contact Support
-              </Link>
-            </li>
-          </ul>
-        </div>
-
+            <ul className="space-y-4">
+              {section.links.map((link, lIdx) => (
+                <li key={lIdx}>
+                  <Link
+                    to={link.to}
+                    className="text-slate-500 hover:text-primary font-bold flex items-center gap-2 group transition-all"
+                  >
+                    <ChevronRight
+                      size={16}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
-      <div className="border-t border-gray-800 pt-8 text-center text-gray-500 font-medium">
-        <p className="flex items-center justify-center gap-2">
-          © 2026 Smart Vision | Built with 
-          <Heart size={16} className="text-primary fill-primary" /> 
-          for future stars
+      {/* Bottom Section */}
+      <div className="border-t-2 border-slate-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        <p className="text-slate-400 font-bold flex items-center gap-2">
+          © 2026 Smart Vision | Built with
+          <Heart
+            size={20}
+            className="text-primary fill-primary animate-pulse"
+          />
+          for kids
         </p>
+
+        <div className="flex items-center gap-2 text-yellow-500 font-black">
+          <Star fill="currentColor" size={20} />
+          <span>RATED #1 BY PARENTS</span>
+        </div>
+
       </div>
     </footer>
   );

@@ -1,80 +1,51 @@
 import { Link } from "react-router-dom";
-import { Play } from "lucide-react"; 
-import type { ReactNode } from "react"; // Added 'type' here
+import { Play, BookOpen } from "lucide-react"; 
 
 interface GameCardProps {
   title: string;
-  description: string;
-  icon: ReactNode; 
-  color: string; 
+  category: string; // e.g., "Geometric Shape Games"
+  imageUrl: string; // The AI-generated image (e.g., from your GitHub/CDN)
+  color: string; // Tailwind color class for accents (e.g., "text-orange-600")
   path: string;
 }
-// ... rest of the code
 
-const GameCard = ({ title, description, icon, color, path }: GameCardProps) => {
+const GameCard = ({ title, category, imageUrl, color, path }: GameCardProps) => {
   return (
-    <div className={`group relative bg-white rounded-3xl p-8 shadow-xl border-b-8 ${color} transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl flex flex-col h-full`}>
+    <div className="group relative bg-white rounded-[2.5rem] shadow-2xl overflow-hidden transition-all duration-300 hover:-translate-y-4 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col h-full border-4 border-white hover:border-yellow-400">
       
-      {/* Icon Wrapper */}
-      <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
-        {icon}
+      {/* 1. Large Game Image (60% Height) */}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img 
+          src={imageUrl} 
+          alt={`${title} Game`} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        {/* Subtle Gradient Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        
+        {/* Title Floating Over Image */}
+        <h3 className="absolute bottom-4 left-6 text-3xl font-black text-white tracking-tight font-display drop-shadow-md">
+          {title}
+        </h3>
       </div>
 
-      <h3 className="text-2xl font-black mb-3 text-gray-800 tracking-tight">
-        {title}
-      </h3>
+      {/* 2. Game Info (Bottom Section) */}
+      <div className="p-6 flex flex-col flex-grow bg-white">
+        
+        <p className={`text-sm font-bold uppercase tracking-widest mb-6 ${color}`}>
+          {category}
+        </p>
 
-      <p className="text-gray-600 mb-8 font-medium leading-relaxed flex-grow">
-        {description}
-      </p>
-
-      {/* Play Button */}
-      <Link
-        to={path}
-        className="inline-flex items-center justify-center gap-2 w-full py-4 bg-primary text-white text-lg font-bold rounded-2xl shadow-lg hover:brightness-110 active:scale-95 transition-all"
-      >
-        Let's Play! <Play size={20} fill="currentColor" />
-      </Link>
+        {/* 3. Action Button - Links to Info Page */}
+        <Link
+          to={path}
+          className="mt-auto inline-flex items-center justify-center gap-3 w-full py-4 bg-gray-900 text-white text-lg font-black rounded-2xl shadow-xl hover:bg-primary active:scale-95 transition-all"
+        >
+          LET'S GO! <Play size={22} fill="currentColor" />
+        </Link>
+      </div>
     </div>
   );
 };
 
 export default GameCard;
-
-// const CATEGORIES = {
-//   Animals: [
-//     { name: "Cat", url: "/animals/cat.png" },
-//     { name: "Dog", url: "/animals/dog.png" },
-//     { name: "Elephant", url: "/animals/elephant.png" },
-//     { name: "Lion", url: "/animals/lion.png" },
-//     { name: "Monkey", url: "/animals/monkey.png" },
-//     { name: "Panda", url: "/animals/panda.png" },
-//     { name: "Penguin", url: "/animals/peguian.png" }, // Adjusted to match your filename 'peguian.png'
-//     { name: "Turtle", url: "/animals/turtle.png" },
-//     { name: "Zebra", url: "/animals/zebra.png" },
-//   ],
-//   Fruits: [
-//     { name: "Apple", url: "/fruits/apple.png" },
-//     { name: "Banana", url: "/fruits/banana.png" },
-//     { name: "Mango", url: "/fruits/mango.png" },
-//     { name: "Orange", url: "/fruits/orange.png" },
-//     { name: "Strawberry", url: "/fruits/strawberry.png" },
-//     { name: "Grapes", url: "/fruits/grapes.png" },
-//     { name: "Watermelon", url: "/fruits/watermelon.png" },
-//     { name: "Pineapple", url: "/fruits/pineapple.png" },
-//     { name: "Cherry", url: "/fruits/cherry.png" },
-//     { name: "Pear", url: "/fruits/pear.png" },
-//   ],
-//   Vehicles: [
-//     { name: "Car", url: "/vehicles/car.png" },
-//     { name: "Rocket", url: "/vehicles/rocket.png" },
-//     { name: "Bus", url: "/vehicles/bus.png" },
-//     { name: "Bicycle", url: "/vehicles/bicycle.png" },
-//     { name: "Airplane", url: "/vehicles/airplane.png" },
-//     { name: "Ship", url: "/vehicles/ship.png" },
-//     { name: "Train", url: "/vehicles/train.png" },
-//     { name: "Helicopter", url: "/vehicles/helicopter.png" },
-//     { name: "Truck", url: "/vehicles/truck.png" },
-//     { name: "Scooter", url: "/vehicles/scooter.png" },
-//   ]
-// };

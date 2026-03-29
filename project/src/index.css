@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
-/* This is where you define your custom colors in v4 */
 @theme {
-    --animate-bounce-slow: bounce-slow 4s infinite ease-in-out;
+  /* 1. Custom Animations */
+  --animate-bounce-slow: bounce-slow 4s infinite ease-in-out;
+  --animate-float: float 5s infinite ease-in-out;
 
   @keyframes bounce-slow {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-30px); }
   }
-  --color-primary: #ff4757;   /* Change to your preferred red/pink */
-  --color-secondary: #2f3542; /* Change to your preferred dark blue */
-  --color-yellow: #ffa502;    /* Change to your preferred yellow */
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(2deg); }
+  }
+
+  /* 2. Custom Colors (Matching your Game Cards) */
+  --color-primary: #ff4757;    /* Bright Fun Red */
+  --color-secondary: #2f3542;  /* Deep Professional Blue */
+  --color-accent: #ffa502;     /* Warm Sunny Yellow */
+  --color-sky: #70a1ff;        /* Soft Blue for backgrounds */
 }
