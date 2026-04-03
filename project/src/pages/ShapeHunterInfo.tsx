@@ -67,7 +67,7 @@ const ShapeHunterInfo = () => {
                   Explore 3D models and learn how to find shapes in your room with our AI robot guide!
                 </p>
                 <button 
-                  onClick={() => navigate("/game/shapes/learning-info")}
+                  onClick={() => navigate("/games/shapes/learning-info")}
                   className="mt-auto flex items-center justify-center gap-3 w-full py-4 bg-blue-500 text-white text-lg font-black rounded-2xl shadow-[0_6px_0_0_#1d4ed8] active:translate-y-1 active:shadow-none transition-all uppercase"
                 >
                   START <BookOpen size={20} />
