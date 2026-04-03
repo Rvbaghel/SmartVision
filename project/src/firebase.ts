@@ -1,17 +1,3 @@
-// import { initializeApp } from "firebase/app";
-// import { getAuth } from "firebase/auth";
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBbdcj60muaRM9xSQbR45gOOA4-xGWnwmI",
-//   authDomain: "smart-vision-b59a3.firebaseapp.com",
-//   projectId: "smart-vision-b59a3",
-//   appId: "1:951765549259:web:69dd08b294e8f6ef571b4e"
-// };
-
-// const app = initializeApp(firebaseConfig);
-
-// export const auth = getAuth(app);
-// src/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
