@@ -99,7 +99,7 @@ const AlphabetAdventureInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/alphabet/learn"); 
+                    navigate("/games/alphabet/learning"); 
                   }}
                   className="w-full py-4 bg-rose-600 hover:bg-rose-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-rose-200 active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -145,7 +145,7 @@ const AlphabetAdventureInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/alphabet/play"); 
+                    navigate("/games/alphabet/play"); 
                   }}
                   className="w-full py-4 bg-pink-600 hover:bg-pink-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-pink-200 active:scale-95 flex items-center justify-center gap-3"
                 >

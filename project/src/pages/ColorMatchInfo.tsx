@@ -101,7 +101,7 @@ const ColorMatchInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation(); // Prevents double triggers
                     playSound(); 
-                    navigate("/game/colors/learn"); 
+                    navigate("/games/color/learning"); 
                   }}
                   className="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-sky-200 active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -147,7 +147,7 @@ const ColorMatchInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/colors/play"); 
+                    navigate("/games/colors/play"); 
                   }}
                   className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-amber-200 active:scale-95 flex items-center justify-center gap-3"
                 >

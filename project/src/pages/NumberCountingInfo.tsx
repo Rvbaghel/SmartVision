@@ -99,7 +99,7 @@ const NumberCountingInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/numbers/learn"); 
+                    navigate("/games/numbercounting/learning"); 
                   }}
                   className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-blue-200 active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -145,7 +145,7 @@ const NumberCountingInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/numbers/play"); 
+                    navigate("/games/numbercounting/play"); 
                   }}
                   className="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-cyan-200 active:scale-95 flex items-center justify-center gap-3"
                 >
