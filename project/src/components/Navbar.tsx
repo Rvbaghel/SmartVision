@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Trophy, LayoutDashboard, LogOut } from "lucide-react";
+import { LogOut, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { signInWithGoogle } from "../auth";
 import { auth } from "../firebase";
@@ -7,16 +7,36 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
+  const [timeLeft, setTimeLeft] = useState<string>("30:00");
 
-  // ✅ 1. Monitor Auth State (Prevents data loss on redirect/refresh)
+  // ✅ 1. Monitor Auth State
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return () => unsubscribe(); // Cleanup listener
+    return () => unsubscribe();
   }, []);
 
-  // ✅ 2. Logout Function
+  // ✅ 2. Live Timer Logic (Syncs with ScreenTimeManager)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const end = localStorage.getItem("screenTimeEnd");
+      if (end) {
+        const remaining = Math.round((parseInt(end, 10) - Date.now()) / 1000);
+        
+        if (remaining > 0) {
+          const mins = Math.floor(remaining / 60);
+          const secs = remaining % 60;
+          setTimeLeft(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
+        } else {
+          setTimeLeft("0:00");
+        }
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -33,26 +53,26 @@ const Navbar = () => {
         {/* LEFT: Logo */}
         <Link to="/" className="flex items-center gap-3 group">
           <span className="text-2xl font-black text-slate-800 tracking-tighter uppercase italic">
-            Smart<span className="text-primary">Vision</span>
+            Smart<span className="text-emerald-500">Vision</span>
           </span>
         </Link>
 
-        {/* RIGHT: Navigation */}
-        <div className="flex items-center gap-6">
-          <div className="hidden md:flex items-center gap-4">
-            <Link to="/activity" className="flex items-center gap-2 font-black text-slate-600 hover:text-primary transition-colors uppercase text-sm tracking-widest">
-              <LayoutDashboard size={20} />
-              Activity
-            </Link>
-            <Link to="/leaderboard" className="flex items-center gap-2 font-black text-slate-600 hover:text-yellow-500 transition-colors uppercase text-sm tracking-widest">
-              <Trophy size={20} />
-              Hall of Fame
-            </Link>
+        {/* RIGHT: Navigation & Timer */}
+        <div className="flex items-center gap-4 md:gap-6">
+          
+          {/* ✅ LIVE TIMER DISPLAY */}
+          <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 shadow-sm transition-all hover:bg-emerald-100">
+            <Clock 
+              size={18} 
+              className={`${timeLeft !== "0:00" ? "text-emerald-500 animate-pulse" : "text-red-500"}`} 
+            />
+            <span className={`font-black text-sm tabular-nums ${timeLeft !== "0:00" ? "text-slate-700" : "text-red-600"}`}>
+              {timeLeft}
+            </span>
           </div>
 
           <div className="h-8 w-[2px] bg-slate-200 hidden md:block" />
 
-          {/* ✅ DYNAMIC LOGIN/LOGOUT SECTION */}
           {user ? (
             <div className="flex items-center gap-4">
               {/* User Profile Info */}
@@ -78,14 +98,14 @@ const Navbar = () => {
           ) : (
             /* Login Button */
             <button 
-              className="flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-2xl font-black hover:scale-105 transition-all shadow-[0_5px_0_0_#be123c] active:translate-y-1 active:shadow-none"
+              className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-2xl font-black hover:scale-105 transition-all shadow-[0_5px_0_0_#059669] active:translate-y-1 active:shadow-none"
               onClick={async () => {
                 const loggedUser = await signInWithGoogle();
                 if (loggedUser) setUser(loggedUser);
               }}
             >
               <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" className="h-5 w-5 bg-white rounded-full p-0.5" alt="G" />
-              <span className="text-sm tracking-widest">LOGIN</span>
+              <span className="text-sm tracking-widest uppercase">Login</span>
             </button>
           )}
         </div>

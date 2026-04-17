@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 //import ArtStudio from "./pages/ArtStudio";
 //import ArtStudioIntro from "./pages/ArtStudioPlay"; 
-
+import ScreenTimeManager from "./components/ScreenTimeManager";
 // info pages
 import ShapeHunterInfo from "./pages/ShapeHunterInfo";
 import AlphabetAdventureInfo from "./pages/AlphabetAdventureInfo";
@@ -30,6 +30,7 @@ import AnimalSoundPlay from "./pages/AnimalSoundPlay";
 
 function App() {
   return (
+    <ScreenTimeManager>
     <Routes>
       <Route path="/" element={<Home />} />
       {/* <Route path="/games/art-info" element={<ArtStudioInfo />} />  
@@ -60,6 +61,7 @@ function App() {
       
       {/* <Route path="/games/math-quiz" element={<MathQuiz />} /> */}
     </Routes>
+    </ScreenTimeManager>
   );
 }
 
