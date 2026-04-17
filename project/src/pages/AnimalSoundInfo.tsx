@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, BookOpen, Sparkles, Square } from "lucide-react";
+import { ArrowLeft, Play, BookOpen, Sparkles, Dog } from "lucide-react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from "../components/Navbar";
-// Using game4.png as requested
-import bg from "../assets/game4.png"; 
-import learnThumb from "../assets/game4.png";
-import playThumb from "../assets/game4.png";
+// Update these paths to your animal game assets
+import bg from "../assets/game5.png"; 
+import learnThumb from "../assets/game5.png";
+import playThumb from "../assets/game5.png";
 
-const ShapeHunterInfo = () => {
+const AnimalSoundInfo = () => {
   const navigate = useNavigate();
 
   const speak = (text: string) => {
@@ -29,10 +29,10 @@ const ShapeHunterInfo = () => {
       <Navbar />
 
       <div className="relative flex-grow flex flex-col items-center pt-32 pb-20 px-6">
-        {/* Background - Shape Hunter Theme */}
+        {/* Background - Nature Theme */}
         <div className="absolute inset-0 z-0">
           <img src={bg} alt="" className="w-full h-full object-cover blur-sm brightness-75" />
-          <div className="absolute inset-0 bg-gradient-to-b from-orange-900/30 via-slate-900/50 to-slate-900/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/30 via-slate-900/50 to-slate-900/90" />
         </div>
 
         <div className="relative z-10 max-w-6xl w-full mx-auto">
@@ -50,12 +50,12 @@ const ShapeHunterInfo = () => {
           {/* Header */}
           <div className="mb-14 text-center md:text-left">
             <h1 className="text-5xl md:text-7xl font-extrabold text-white drop-shadow-2xl tracking-tight mb-3">
-              Shape <span className="text-orange-400">Hunter</span>
+              Animal <span className="text-emerald-400">& Sounds</span>
             </h1>
 
             <div className="flex items-center gap-3 justify-center md:justify-start text-white/85 text-lg font-medium">
-              <Square className="text-yellow-400" size={24} />
-              <span>Find the hidden geometry!</span>
+              <Dog className="text-orange-400" size={24} />
+              <span>Hear the wild world roar!</span>
               <Sparkles className="text-yellow-300" size={20} />
             </div>
           </div>
@@ -65,18 +65,18 @@ const ShapeHunterInfo = () => {
             
             {/* Learn Card */}
             <div 
-              onMouseEnter={() => speak("Shape Hunter: Learning Phase")} 
-              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-orange-200 cursor-pointer"
+              onMouseEnter={() => speak("Animal Sounds: Learning Phase")} 
+              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-emerald-200 cursor-pointer"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
                   src={learnThumb}
-                  alt="Learn shapes"
+                  alt="Learn animal sounds"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                  <div className="bg-orange-500 p-2 rounded-lg">
+                  <div className="bg-emerald-500 p-2 rounded-lg">
                     <BookOpen size={24} />
                   </div>
                   <h3 className="text-2xl font-bold uppercase tracking-tight">Phase 1: Learning</h3>
@@ -84,8 +84,9 @@ const ShapeHunterInfo = () => {
               </div>
 
               <div className="p-8 flex flex-col items-center">
-                <div className="w-full h-44 mb-6 bg-orange-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-orange-50 transition-colors">
+                <div className="w-full h-44 mb-6 bg-emerald-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-emerald-50 transition-colors">
                   <div className="transform group-hover:-translate-y-2 transition-transform duration-500 ease-in-out">
+                    {/* You can change this Lottie SRC to an animal-themed one if you have it! */}
                     <DotLottieReact
                       src="/Learning.lottie" 
                       loop
@@ -99,9 +100,9 @@ const ShapeHunterInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/shapes/learn"); 
+                    navigate("/game/animals/learn"); 
                   }}
-                  className="w-full py-4 bg-orange-600 hover:bg-orange-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95 flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-emerald-200 active:scale-95 flex items-center justify-center gap-3"
                 >
                   START LEARNING
                   <BookOpen size={20} />
@@ -111,18 +112,18 @@ const ShapeHunterInfo = () => {
 
             {/* Play Card */}
             <div 
-              onMouseEnter={() => speak("Shape Hunter: Playing Phase")}
-              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-red-200 cursor-pointer"
+              onMouseEnter={() => speak("Animal Sounds: Playing Phase")}
+              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-orange-200 cursor-pointer"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
                   src={playThumb}
-                  alt="Play shapes game"
+                  alt="Play animal game"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                  <div className="bg-red-500 p-2 rounded-lg">
+                  <div className="bg-orange-500 p-2 rounded-lg">
                     <Play size={24} />
                   </div>
                   <h3 className="text-2xl font-bold uppercase tracking-tight">Phase 2: Play</h3>
@@ -130,7 +131,7 @@ const ShapeHunterInfo = () => {
               </div>
 
               <div className="p-8 flex flex-col items-center">
-                <div className="w-full h-44 mb-6 bg-red-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-red-50 transition-colors">
+                <div className="w-full h-44 mb-6 bg-orange-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-orange-50 transition-colors">
                   <div className="transform group-hover:-translate-y-2 transition-transform duration-500 ease-in-out">
                     <DotLottieReact
                       src="/gaming-community.lottie"
@@ -145,9 +146,9 @@ const ShapeHunterInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/shapes/play"); 
+                    navigate("/game/animals/play"); 
                   }}
-                  className="w-full py-4 bg-red-600 hover:bg-red-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-red-200 active:scale-95 flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-orange-500 hover:bg-orange-400 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95 flex items-center justify-center gap-3"
                 >
                   PLAY NOW
                   <Play size={20} />
@@ -162,4 +163,4 @@ const ShapeHunterInfo = () => {
   );
 };
 
-export default ShapeHunterInfo;
+export default AnimalSoundInfo;

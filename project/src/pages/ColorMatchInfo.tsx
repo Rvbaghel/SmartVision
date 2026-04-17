@@ -1,18 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, BookOpen, Sparkles, Square } from "lucide-react";
+import { ArrowLeft, Play, BookOpen, Sparkles, Palette } from "lucide-react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from "../components/Navbar";
-// Using game4.png as requested
-import bg from "../assets/game4.png"; 
-import learnThumb from "../assets/game4.png";
-import playThumb from "../assets/game4.png";
+import bg from "../assets/game3.png";
+import learnThumb from "../assets/game3.png";
+import playThumb from "../assets/game3.png";
 
-const ShapeHunterInfo = () => {
+const ColorMatchInfo = () => {
   const navigate = useNavigate();
 
+  // Voice Function for Kids
   const speak = (text: string) => {
+    // Stop any current speech before starting new one
     window.speechSynthesis.cancel();
+    
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.9; 
     utterance.pitch = 1.2; 
@@ -29,10 +31,10 @@ const ShapeHunterInfo = () => {
       <Navbar />
 
       <div className="relative flex-grow flex flex-col items-center pt-32 pb-20 px-6">
-        {/* Background - Shape Hunter Theme */}
+        {/* Background */}
         <div className="absolute inset-0 z-0">
           <img src={bg} alt="" className="w-full h-full object-cover blur-sm brightness-75" />
-          <div className="absolute inset-0 bg-gradient-to-b from-orange-900/30 via-slate-900/50 to-slate-900/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-sky-900/30 via-slate-900/50 to-slate-900/90" />
         </div>
 
         <div className="relative z-10 max-w-6xl w-full mx-auto">
@@ -50,12 +52,12 @@ const ShapeHunterInfo = () => {
           {/* Header */}
           <div className="mb-14 text-center md:text-left">
             <h1 className="text-5xl md:text-7xl font-extrabold text-white drop-shadow-2xl tracking-tight mb-3">
-              Shape <span className="text-orange-400">Hunter</span>
+              Color <span className="text-sky-300">Match</span>
             </h1>
 
             <div className="flex items-center gap-3 justify-center md:justify-start text-white/85 text-lg font-medium">
-              <Square className="text-yellow-400" size={24} />
-              <span>Find the hidden geometry!</span>
+              <Palette className="text-amber-300" size={22} />
+              <span>Learn colors visually</span>
               <Sparkles className="text-yellow-300" size={20} />
             </div>
           </div>
@@ -65,18 +67,18 @@ const ShapeHunterInfo = () => {
             
             {/* Learn Card */}
             <div 
-              onMouseEnter={() => speak("Shape Hunter: Learning Phase")} 
-              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-orange-200 cursor-pointer"
+              onMouseEnter={() => speak("Color Matching: Learning Phase")} 
+              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-sky-200 cursor-pointer"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
                   src={learnThumb}
-                  alt="Learn shapes"
+                  alt="Learn colors"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                  <div className="bg-orange-500 p-2 rounded-lg">
+                  <div className="bg-sky-500 p-2 rounded-lg">
                     <BookOpen size={24} />
                   </div>
                   <h3 className="text-2xl font-bold uppercase tracking-tight">Phase 1: Learning</h3>
@@ -84,10 +86,10 @@ const ShapeHunterInfo = () => {
               </div>
 
               <div className="p-8 flex flex-col items-center">
-                <div className="w-full h-44 mb-6 bg-orange-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-orange-50 transition-colors">
+                <div className="w-full h-44 mb-6 bg-sky-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-sky-50 transition-colors">
                   <div className="transform group-hover:-translate-y-2 transition-transform duration-500 ease-in-out">
                     <DotLottieReact
-                      src="/Learning.lottie" 
+                      src="/Learning.lottie"
                       loop
                       autoplay
                       style={{ height: 160, width: 160 }}
@@ -97,11 +99,11 @@ const ShapeHunterInfo = () => {
 
                 <button
                   onClick={(e) => { 
-                    e.stopPropagation();
+                    e.stopPropagation(); // Prevents double triggers
                     playSound(); 
-                    navigate("/game/shapes/learn"); 
+                    navigate("/game/colors/learn"); 
                   }}
-                  className="w-full py-4 bg-orange-600 hover:bg-orange-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95 flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-sky-200 active:scale-95 flex items-center justify-center gap-3"
                 >
                   START LEARNING
                   <BookOpen size={20} />
@@ -111,18 +113,18 @@ const ShapeHunterInfo = () => {
 
             {/* Play Card */}
             <div 
-              onMouseEnter={() => speak("Shape Hunter: Playing Phase")}
-              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-red-200 cursor-pointer"
+              onMouseEnter={() => speak("Color Matching: Playing Phase")}
+              className="group bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-amber-200 cursor-pointer"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
                   src={playThumb}
-                  alt="Play shapes game"
+                  alt="Play game"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                  <div className="bg-red-500 p-2 rounded-lg">
+                  <div className="bg-amber-500 p-2 rounded-lg">
                     <Play size={24} />
                   </div>
                   <h3 className="text-2xl font-bold uppercase tracking-tight">Phase 2: Play</h3>
@@ -130,7 +132,7 @@ const ShapeHunterInfo = () => {
               </div>
 
               <div className="p-8 flex flex-col items-center">
-                <div className="w-full h-44 mb-6 bg-red-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-red-50 transition-colors">
+                <div className="w-full h-44 mb-6 bg-amber-50/50 rounded-2xl flex justify-center items-center relative overflow-hidden group-hover:bg-amber-50 transition-colors">
                   <div className="transform group-hover:-translate-y-2 transition-transform duration-500 ease-in-out">
                     <DotLottieReact
                       src="/gaming-community.lottie"
@@ -145,9 +147,9 @@ const ShapeHunterInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/shapes/play"); 
+                    navigate("/game/colors/play"); 
                   }}
-                  className="w-full py-4 bg-red-600 hover:bg-red-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-red-200 active:scale-95 flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-amber-200 active:scale-95 flex items-center justify-center gap-3"
                 >
                   PLAY NOW
                   <Play size={20} />
@@ -162,4 +164,4 @@ const ShapeHunterInfo = () => {
   );
 };
 
-export default ShapeHunterInfo;
+export default ColorMatchInfo;

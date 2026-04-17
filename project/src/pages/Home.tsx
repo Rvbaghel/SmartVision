@@ -56,42 +56,42 @@ const Home = () => {
       category: "Letters & Phonics",
       imageUrl: game1,
       color: "text-rose-500",
-      path: "/games/art-info" // Path remains as requested
+      path: "/games/alphabet/info" 
     },
     {
       title: "Number Counting",
       category: "Math Basics 1-20",
       imageUrl: game2,
       color: "text-blue-500",
-      path: "/games/shapes-info"
+      path: "/games/numbercounting/info"
     },
     {
       title: "Color Match",
       category: "Colors & Rainbows",
       imageUrl: game3,
       color: "text-yellow-500",
-      path: "/games/road-signs-info"
+      path: "/games/colors/info"
     },
     {
       title: "Shape Hunter",
       category: "Geometric Shapes",
       imageUrl: game4,
       color: "text-orange-500",
-      path: "/game/animals/info"
+      path: "/games/shape/info"
     },
     {
       title: "Animal & Sound",
       category: "Nature & Animals",
       imageUrl: game5,
       color: "text-emerald-600",
-      path: "/game/food/info"
+      path: "/games/animal/info"
     },
     {
       title: "Memory Match",
       category: "Focus & Brain Power",
       imageUrl: game6,
       color: "text-purple-500",
-      path: "/games/art-info" 
+      path: "/games/memory/info" 
     }
   ];
 
