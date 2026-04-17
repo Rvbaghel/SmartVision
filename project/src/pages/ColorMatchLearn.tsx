@@ -8,14 +8,14 @@ import bg from "../assets/game3.png";
 
 // Simplified data: 1 Image per color as requested
 const colorData = [
-  { name: "Red", hex: "#ef4444", img: "https://img.icons8.com/color/96/strawberry.png", voice: "Red like a strawberry!" },
+  { name: "Red", hex: "#ff0303", img: "https://img.icons8.com/color/96/strawberry.png", voice: "Red like a strawberry!" },
   { name: "Orange", hex: "#f97316", img: "https://img.icons8.com/color/96/orange.png", voice: "Orange like an orange!" },
-  { name: "Yellow", hex: "#eab308", img: "https://img.icons8.com/color/96/sun.png", voice: "Yellow like the sun!" },
-  { name: "Green", hex: "#22c55e", img: "https://img.icons8.com/color/96/deciduous-tree.png", voice: "Green like the grass!" },
-  { name: "Blue", hex: "#3b82f6", img: "https://img.icons8.com/color/96/whale.png", voice: "Blue like the ocean!" },
-  { name: "Purple", hex: "#a855f7", img: "https://img.icons8.com/color/96/grapes.png", voice: "Purple like grapes!" },
-  { name: "Pink", hex: "#ec4899", img: "https://img.icons8.com/color/96/flamingo.png", voice: "Pink like a flamingo!" },
-  { name: "Brown", hex: "#78350f", img: "https://img.icons8.com/color/96/chocolate-bar.png", voice: "Brown like chocolate!" },
+  { name: "Yellow", hex: "#fff204", img: "https://img.icons8.com/color/96/sun.png", voice: "Yellow like the sun!" },
+  { name: "Green", hex: "#02f15a", img: "https://img.icons8.com/color/96/deciduous-tree.png", voice: "Green like the grass!" },
+  { name: "Blue", hex: "#0262fd", img: "https://img.icons8.com/color/96/whale.png", voice: "Blue like the ocean!" },
+  { name: "Purple", hex: "#8400ff", img: "https://img.icons8.com/color/96/grapes.png", voice: "Purple like grapes!" },
+  { name: "Pink", hex: "#ff0080", img: "https://img.icons8.com/color/96/flamingo.png", voice: "Pink like a flamingo!" },
+  { name: "Brown", hex: "#6e2800", img: "https://img.icons8.com/color/96/chocolate-bar.png", voice: "Brown like chocolate!" },
 ];
 
 const ColorMatchLearn = () => {

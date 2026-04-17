@@ -100,7 +100,7 @@ const AnimalSoundInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/animals/learn"); 
+                    navigate("/games/animal/learning"); 
                   }}
                   className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-emerald-200 active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -146,7 +146,7 @@ const AnimalSoundInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/animals/play"); 
+                    navigate("/games/animal/play"); 
                   }}
                   className="w-full py-4 bg-orange-500 hover:bg-orange-400 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95 flex items-center justify-center gap-3"
                 >

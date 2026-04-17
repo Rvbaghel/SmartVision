@@ -15,6 +15,8 @@ import NumberCountingInfo from "./pages/NumberCountingInfo";
 import AlphabetLearn from "./pages/AlphabetLearn";
 import NumberCountingLearn from "./pages/NumberCountingLearn";
 import ColorMatchLearn from "./pages/ColorMatchLearn";
+import MemoryMatchLearn from "./pages/MemoryMatchLearn";
+import AnimalSoundLearn from "./pages/AnimalSoundLearn";
 // import ArtStudioInfo from "./pages/ArtStudioInfo";
 
 
@@ -22,7 +24,8 @@ import ColorMatchLearn from "./pages/ColorMatchLearn";
 import AlphabetPlay from "./pages/AlphabetPlay";
 import NumberCountingPlay from "./pages/NumberCountingPlay";
 import ColorMatchPlay from "./pages/ColorMatchPlay";
-
+import MemoryMatchPlay from "./pages/MemoryMatchPlay";
+import AnimalSoundPlay from "./pages/AnimalSoundPlay";
 // import ArtStudioPlay from "./pages/ArtStudioPlay";
 
 function App() {
@@ -45,11 +48,15 @@ function App() {
       <Route path="/games/alphabet/learning" element={<AlphabetLearn />} />
       <Route path="/games/numbercounting/learning" element={<NumberCountingLearn/>} />
       <Route path="/games/color/learning" element={<ColorMatchLearn/>} />
+      <Route path="/games/memory/learning" element={<MemoryMatchLearn/>} />
+      <Route path="/games/animal/learning" element={<AnimalSoundLearn/>} />
        
       {/* Playing Phase pages*/}
       <Route path="/games/alphabet/play" element={<AlphabetPlay />} />
       <Route path="/games/numbercounting/play" element={<NumberCountingPlay />} />
       <Route path="/games/colors/play" element={<ColorMatchPlay />} />
+      <Route path="/games/memory/play" element={<MemoryMatchPlay />} />
+      <Route path="/games/animal/play" element={<AnimalSoundPlay />} />
       
       {/* <Route path="/games/math-quiz" element={<MathQuiz />} /> */}
     </Routes>

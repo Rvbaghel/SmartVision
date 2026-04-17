@@ -99,7 +99,7 @@ const MemoryMatchInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/memory/learn"); 
+                    navigate("/games/memory/learning"); 
                   }}
                   className="w-full py-4 bg-purple-600 hover:bg-purple-500 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-purple-200 active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -145,7 +145,7 @@ const MemoryMatchInfo = () => {
                   onClick={(e) => { 
                     e.stopPropagation();
                     playSound(); 
-                    navigate("/game/memory/play"); 
+                    navigate("/games/memory/play"); 
                   }}
                   className="w-full py-4 bg-indigo-500 hover:bg-indigo-400 text-white text-lg font-bold rounded-2xl transition-all shadow-lg shadow-indigo-200 active:scale-95 flex items-center justify-center gap-3"
                 >

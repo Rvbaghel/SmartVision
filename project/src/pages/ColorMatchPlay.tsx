@@ -6,14 +6,15 @@ import confetti from "canvas-confetti";
 import Navbar from "../components/Navbar";
 
 const colorData = [
-  { name: "Red", hex: "#ef4444", img: "https://img.icons8.com/color/96/strawberry.png" },
-  { name: "Orange", hex: "#f97316", img: "https://img.icons8.com/color/96/orange.png" },
-  { name: "Yellow", hex: "#eab308", img: "https://img.icons8.com/color/96/sun.png" },
-  { name: "Green", hex: "#22c55e", img: "https://img.icons8.com/color/96/deciduous-tree.png" },
-  { name: "Blue", hex: "#3b82f6", img: "https://img.icons8.com/color/96/whale.png" },
-  { name: "Purple", hex: "#a855f7", img: "https://img.icons8.com/color/96/grapes.png" },
-  { name: "Pink", hex: "#ec4899", img: "https://img.icons8.com/color/96/flamingo.png" },
-  { name: "Brown", hex: "#78350f", img: "https://img.icons8.com/color/96/chocolate-bar.png" },
+  { name: "Red", hex: "#ff0303", img: "https://img.icons8.com/color/96/strawberry.png" },
+  { name: "Orange", hex: "#f97316", img: "https://img.icons8.com/color/96/orange.png"},
+  { name: "Yellow", hex: "#fff204", img: "https://img.icons8.com/color/96/sun.png" },
+  { name: "Green", hex: "#02f15a", img: "https://img.icons8.com/color/96/deciduous-tree.png"},
+  { name: "Blue", hex: "#0262fd", img: "https://img.icons8.com/color/96/whale.png" },
+  { name: "Purple", hex: "#8400ff", img: "https://img.icons8.com/color/96/grapes.png"},
+  { name: "Pink", hex: "#ff0080", img: "https://img.icons8.com/color/96/flamingo.png" },
+  { name: "Brown", hex: "#6e2800", img: "https://img.icons8.com/color/96/chocolate-bar.png" },
+
 ];
 
 const ColorMatchPlay = () => {
