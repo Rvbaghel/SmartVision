@@ -10,7 +10,7 @@ import Features from "../components/Features";
 import background from "../assets/homepage.png";
 import BackgroundMusic from "../components/BackgroundMusic";
 
-import game1 from "../assets/game1.png"; // Alphabet Adventure
+import game1 from "../assets/game1.png"; 
 import game2 from "../assets/game2.png"; // Number Counting
 import game3 from "../assets/game3.png"; // Color Match
 import game4 from "../assets/game4.png"; // Shape Hunter

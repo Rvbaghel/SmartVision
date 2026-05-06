@@ -1,48 +1,94 @@
 import React from 'react';
-import { Palette, Bot, Gamepad2, Star, Sparkles, Trophy } from 'lucide-react';
+import { PlayCircle, BookOpen } from 'lucide-react';
+
+// Importing images from the assets folder
+import poem1 from '../assets/poem1.png';
+import poem2 from '../assets/poem2.png';
+import poem3 from '../assets/poem3.png';
+import poem4 from '../assets/poem4.png';
+import poem5 from '../assets/poem5.png';
+
+const poems = [
+  { id: 1, title: "Bus Adventure", img: poem1, link: "https://www.youtube.com/watch?v=e_04ZrNroTo" },
+  { id: 2, title: "Fire Truck Hero", img: poem2, link: "https://www.youtube.com/watch?v=K3SInH9X670" },
+  { id: 3, title: "Dino Stomp", img: poem3, link: "https://www.youtube.com/watch?v=E_u7P_T_RRE" },
+  { id: 4, title: "Row Your Boat", img: poem4, link: "https://www.youtube.com/watch?v=7otAJa3jui8" },
+  { id: 5, title: "Space Rocket", img: poem5, link: "https://www.youtube.com/watch?v=dg0O94B2pXw" },
+];
 
 const Features: React.FC = () => {
   return (
-    <section className="py-24 px-10 max-w-7xl mx-auto text-center relative overflow-hidden">
+    <section className="py-10 px-4 max-w-[1400px] mx-auto text-center relative overflow-hidden">
       
       {/* Playful Section Title */}
-      <div className="mb-16">
-        <h2 className="text-5xl md:text-6xl font-black text-slate-800 mb-4 tracking-tight">
-          What can we do today? <span className="text-yellow-400 animate-pulse inline-block">✨</span>
+      <div className="mb-10">
+        <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-2 tracking-tight">
+          Smarty's Poetry Corner <span className="text-yellow-400 animate-pulse inline-block">📖</span>
         </h2>
-        <p className="text-xl font-bold text-slate-500 uppercase tracking-widest">Pick a fun mission!</p>
+        <p className="text-lg font-bold text-slate-500 uppercase tracking-widest">Pick a Story Mission!</p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-16 md:gap-24">
+      {/* Container with overflow hidden to keep it "no-scroll" */}
+      <div className="relative w-full overflow-hidden py-8">
         
-        {/* Action 1: Draw */}
-        <div className="flex flex-col items-center gap-6 group cursor-pointer">
-          <div className="w-40 h-40 md:w-52 md:h-52 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full flex items-center justify-center border-8 border-white shadow-2xl group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 relative">
-            <Palette size={80} className="text-emerald-600 animate-pulse" />
-            <Star size={24} fill="#fbbf24" className="absolute top-2 right-4 text-yellow-400 animate-bounce" />
-          </div>
-          <span className="text-3xl font-black text-emerald-700 bg-emerald-50 px-6 py-2 rounded-full shadow-sm">Draw Art!</span>
-        </div>
+        {/* The Scrolling Track */}
+        <div className="flex gap-8 w-max animate-scroll-loop group">
+          {/* Tripling the items ensures a seamless infinite loop with no empty space */}
+          {[...poems, ...poems, ...poems].map((poem, index) => (
+            <div 
+              key={`${poem.id}-${index}`} 
+              className="flex-shrink-0 w-[320px] bg-white rounded-[2rem] p-6 shadow-xl border-2 border-slate-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-indigo-200 group/card cursor-pointer"
+            >
+              {/* MEDIUM Image Card */}
+              <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-5 shadow-sm">
+                <img 
+                  src={poem.img} 
+                  alt={poem.title} 
+                  className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+                />
+              </div>
 
-        {/* Action 2: Learn */}
-        <div className="flex flex-col items-center gap-6 group cursor-pointer">
-          <div className="w-40 h-40 md:w-52 md:h-52 bg-gradient-to-br from-blue-100 to-sky-200 rounded-full flex items-center justify-center border-8 border-white shadow-2xl group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-300 relative">
-            <Bot size={80} className="text-sky-600 animate-bounce-slow" />
-            <Sparkles size={24} className="absolute top-4 left-4 text-blue-400 animate-pulse" />
-          </div>
-          <span className="text-3xl font-black text-sky-700 bg-blue-50 px-6 py-2 rounded-full shadow-sm">Talk to Smarty!</span>
+              {/* Title */}
+              <h4 className="text-2xl font-black text-slate-800 mb-4 flex items-center justify-center gap-2">
+                <BookOpen className="text-indigo-400" size={24} />
+                {poem.title}
+              </h4>
+              
+              {/* Play Button */}
+              <a 
+                href={poem.link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full bg-rose-500 hover:bg-rose-600 text-white font-black text-lg py-3 rounded-xl transition-all shadow-md active:scale-95"
+              >
+                <PlayCircle size={24} />
+                PLAY NOW
+              </a>
+            </div>
+          ))}
         </div>
-
-        {/* Action 3: Play */}
-        <div className="flex flex-col items-center gap-6 group cursor-pointer">
-          <div className="w-40 h-40 md:w-52 md:h-52 bg-gradient-to-br from-rose-100 to-pink-200 rounded-full flex items-center justify-center border-8 border-white shadow-2xl group-hover:-rotate-12 group-hover:scale-110 transition-all duration-300 relative">
-            <Gamepad2 size={80} className="text-rose-600" />
-            <Trophy size={24} className="absolute bottom-4 right-4 text-rose-400 animate-bounce" />
-          </div>
-          <span className="text-3xl font-black text-rose-700 bg-rose-50 px-6 py-2 rounded-full shadow-sm">Win Prizes!</span>
-        </div>
-
       </div>
+
+      {/* Custom Styles for Smooth Infinite Scroll & Hover Pause */}
+      <style>{`
+        @keyframes scrollLoop {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.33%); }
+        }
+
+        .animate-scroll-loop {
+          animation: scrollLoop 25s linear infinite;
+        }
+
+        /* This stops the movement when ANY part of the card is hovered */
+        .group:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+
+      {/* Decorative Background Elements */}
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-yellow-100 rounded-full blur-3xl opacity-40 -z-10" />
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-100 rounded-full blur-3xl opacity-40 -z-10" />
     </section>
   );
 };
