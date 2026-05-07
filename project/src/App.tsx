@@ -14,7 +14,7 @@ import Home from "./pages/Home";
 
 //import ArtStudioIntro from "./pages/ArtStudioPlay";
 
-import ScreenTimeManager from "./components/ScreenTimeManager";
+import ScreenTimeManager from "./Components/ScreenTimeManager";
 
 // info pages
 
@@ -48,7 +48,7 @@ import AnimalSoundLearn from "./pages/AnimalSoundLearn";
 
 
 
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './Components/AdminDashboard';
 
 
 
@@ -73,28 +73,28 @@ function App() {
   const user = auth.currentUser;
 
   // 2. The Heartbeat Timer Logic
-  useEffect(() => {
-    if (!user?.email) return;
+  // useEffect(() => {
+  //   if (!user?.email) return;
 
-    const heartbeat = setInterval(async () => {
-      console.log("Sending heartbeat for:", user.email);
-      try {
-        const res = await fetch(`http://localhost:8000/api/update-usage?email=${user.email}`, {
-          method: 'POST'
-        });
-        const data = await res.json();
+  //   const heartbeat = setInterval(async () => {
+  //     console.log("Sending heartbeat for:", user.email);
+  //     try {
+  //       const res = await fetch(`http://localhost:8000/api/update-usage?email=${user.email}`, {
+  //         method: 'POST'
+  //       });
+  //       const data = await res.json();
 
-        // If backend says it's time to show the popup
-        if (data.show_rating_popup) {
-          setShowRating(true);
-        }
-      } catch (err) {
-        console.error("Heartbeat failed: Server might be down");
-      }
-    }, 10000); // Check every 60 seconds (1 minute)
+  //       // If backend says it's time to show the popup
+  //       if (data.show_rating_popup) {
+  //         setShowRating(true);
+  //       }
+  //     } catch (err) {
+  //       console.error("Heartbeat failed: Server might be down");
+  //     }
+  //   }, 10000); // Check every 60 seconds (1 minute)
 
-    return () => clearInterval(heartbeat);
-  }, [user?.email]);
+  //   return () => clearInterval(heartbeat);
+  // }, [user?.email]);
 
   return (
     <ScreenTimeManager>

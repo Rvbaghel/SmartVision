@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Trophy, Volume2, PlayCircle, Gamepad2, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 const animalData = [
   { name: "Bird", img: "https://img.icons8.com/color/144/bird.png", sound: "/sounds/bird.mp3", color: "bg-blue-100" },

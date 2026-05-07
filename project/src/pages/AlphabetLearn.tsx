@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Volume2, Sparkles, Star, BookOpen } from "lucide-react";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 // Define the alphabet data
 const alphabetData = [

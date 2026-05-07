@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Play, BookOpen, Sparkles, Palette } from "lucide-react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 import bg from "../assets/game3.png";
 import learnThumb from "../assets/game3.png";
 import playThumb from "../assets/game3.png";

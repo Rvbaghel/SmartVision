@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Volume2, Sparkles, PawPrint } from "lucide-react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 // 1. Define the TypeScript Interface for the animal object
 interface Animal {

@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Play, BookOpen, Sparkles, Dog } from "lucide-react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 // Update these paths to your animal game assets
 import bg from "../assets/game5.png"; 
 import learnThumb from "../assets/game5.png";

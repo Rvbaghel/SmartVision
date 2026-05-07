@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Volume2, Sparkles, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 import bg from "../assets/game3.png";
 
 // Simplified data: 1 Image per color as requested

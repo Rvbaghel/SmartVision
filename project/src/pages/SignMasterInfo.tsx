@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Play, BookOpen, Trophy, Sparkles, ShieldCheck } from "lucide-react";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 // Update these imports to your Sign Master assets
 import signsBg from "../assets/roadgame.png"; 

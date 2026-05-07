@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Brain, Sparkles, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 // Updated with reliable URLs and bold colors
 const memoryData = [

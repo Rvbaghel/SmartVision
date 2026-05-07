@@ -3,12 +3,12 @@ import {
   Gamepad2, Rocket, Sparkles, Trophy, Star, 
   Bot, ShieldCheck, Palette, Brush 
 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import GameCard from "../components/GameCard";
-import Features from "../components/Features";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
+import GameCard from "../Components/GameCard";
+import Features from "../Components/Features";
 import background from "../assets/homepage.png";
-import BackgroundMusic from "../components/BackgroundMusic";
+import BackgroundMusic from "../Components/BackgroundMusic";
 
 import game1 from "../assets/game1.png"; 
 import game2 from "../assets/game2.png"; // Number Counting

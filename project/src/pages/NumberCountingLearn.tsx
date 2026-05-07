@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Volume2, Sparkles, Cloud } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 // More fun themes for kids
 const countingThemes = [

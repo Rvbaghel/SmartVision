@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Trophy, RefreshCw, PlayCircle, Gamepad2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 const colorData = [
   { name: "Red", hex: "#ff0303", img: "https://img.icons8.com/color/96/strawberry.png" },

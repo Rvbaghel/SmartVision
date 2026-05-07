@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Lightbulb, CheckCircle } from "lucide-react";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 /* ✅ INTERFACE (IMPORTANT) */
 interface Shape {
