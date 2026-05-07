@@ -26,6 +26,7 @@ class UserStats(Base):
     # This stores the minute mark for the next reminder (e.g., 30, 60, 90...)
     next_reminder_at = Column(Integer, default=30)
 
+
 # Add this to your models.py
 class Feedback(Base):
     __tablename__ = "user_feedback"
@@ -35,3 +36,15 @@ class Feedback(Base):
     rating = Column(Integer)  # 1 to 5
     milestone = Column(String)  # e.g., "30m", "60m"
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+  # models.py
+
+class Poem(Base):
+    __tablename__ = "poems"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    image_name = Column(String(255), nullable=False)  # Stores "poem1.png"
+    youtube_link = Column(String(255), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)  

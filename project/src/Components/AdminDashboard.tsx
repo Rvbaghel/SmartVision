@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Trash2, Key, Database, Play, AlertCircle, Loader2 } from 'lucide-react';
+import { Settings, Trash2, Key, Database, Play, AlertCircle, Loader2, Music, Edit3 } from 'lucide-react';
 import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 import { API_BASE_URL } from "../config/api";
 
 const AdminDashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // States for PIN Management
   const [testEmail, setTestEmail] = useState("");
   const [testPin, setTestPin] = useState("");
+  
+  // States for Poem Management
+  const [poemId, setPoemId] = useState("");
+  const [poemTitle, setPoemTitle] = useState("");
+  const [poemLink, setPoemLink] = useState("");
+  const [poemImage, setPoemImage] = useState("");
+
   const [response, setResponse] = useState<any>(null);
 
   const auth = getAuth();
@@ -43,9 +52,6 @@ const AdminDashboard: React.FC = () => {
 
   const runApi = async (endpoint: string, method: string, body?: any) => {
     try {
-      // Note: Remember to upda
-      // te this URL when your backend is live (e.g. on Render/AWS)
-
       const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -97,10 +103,48 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* SECTION 2: POEM MANAGEMENT */}
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-slate-100">
+            <h2 className="text-xl font-black mb-6 flex items-center gap-2 text-slate-700">
+              <Music className="text-pink-500"/> Poem Management
+            </h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <input 
+                  placeholder="Poem ID (for Update)" 
+                  className="p-4 rounded-xl border-2 focus:border-pink-500 outline-none transition-all"
+                  onChange={(e) => setPoemId(e.target.value)}
+                />
+                <input 
+                  placeholder="Title (exact for Delete)" 
+                  className="p-4 rounded-xl border-2 focus:border-pink-500 outline-none transition-all"
+                  onChange={(e) => setPoemTitle(e.target.value)}
+                />
+              </div>
+              <input 
+                placeholder="YouTube URL" 
+                className="w-full p-4 rounded-xl border-2 focus:border-pink-500 outline-none transition-all"
+                onChange={(e) => setPoemLink(e.target.value)}
+              />
+              <input 
+                placeholder="Image Name (e.g. poem1.png)" 
+                className="w-full p-4 rounded-xl border-2 focus:border-pink-500 outline-none transition-all"
+                onChange={(e) => setPoemImage(e.target.value)}
+              />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <button onClick={() => runApi("/api/poems", "GET")} className="bg-slate-700 text-white font-bold py-3 rounded-xl shadow-md active:scale-95">FETCH ALL POEMS</button>
+                <button onClick={() => runApi("/api/admin/add-poem", "POST", { id: 0, title: poemTitle, youtube_link: poemLink, image_name: poemImage })} className="bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-md active:scale-95">ADD NEW</button>
+                <button onClick={() => runApi(`/api/admin/update-poem/${poemId}`, "PUT", { id: parseInt(poemId), title: poemTitle, youtube_link: poemLink, image_name: poemImage })} className="flex items-center justify-center gap-2 bg-amber-500 text-white font-bold py-3 rounded-xl shadow-md active:scale-95"><Edit3 size={18}/> UPDATE</button>
+                <button onClick={() => runApi(`/api/admin/delete-poem/${poemTitle}`, "DELETE")} className="flex items-center justify-center gap-2 bg-rose-500 text-white font-bold py-3 rounded-xl shadow-md active:scale-95"><Trash2 size={18}/> DELETE</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* RIGHT SIDE: LIVE CONSOLE */}
-        <div className="bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden relative flex flex-col h-[600px]">
+        <div className="bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden relative flex flex-col h-[750px]">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-emerald-500 font-black uppercase tracking-widest text-sm">Live Data Console</h2>
             <button onClick={() => setResponse(null)} className="text-slate-500 text-xs hover:text-white uppercase font-bold tracking-tighter">Clear</button>
@@ -120,4 +164,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard;  
+export default AdminDashboard;

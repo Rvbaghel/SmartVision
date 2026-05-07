@@ -1,5 +1,6 @@
-import React from 'react';
-import { PlayCircle, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PlayCircle, BookOpen, Loader2 } from 'lucide-react';
+import { API_BASE_URL } from "../config/api";
 
 // Importing images from the assets folder
 import poem1 from '../assets/poem1.png';
@@ -8,15 +9,52 @@ import poem3 from '../assets/poem3.png';
 import poem4 from '../assets/poem4.png';
 import poem5 from '../assets/poem5.png';
 
-const poems = [
-  { id: 1, title: "Bus Adventure", img: poem1, link: "https://www.youtube.com/watch?v=e_04ZrNroTo" },
-  { id: 2, title: "Fire Truck Hero", img: poem2, link: "https://www.youtube.com/watch?v=K3SInH9X670" },
-  { id: 3, title: "Dino Stomp", img: poem3, link: "https://www.youtube.com/watch?v=E_u7P_T_RRE" },
-  { id: 4, title: "Row Your Boat", img: poem4, link: "https://www.youtube.com/watch?v=7otAJa3jui8" },
-  { id: 5, title: "Space Rocket", img: poem5, link: "https://www.youtube.com/watch?v=dg0O94B2pXw" },
-];
+// Map database strings to imported assets
+const imageMap: { [key: string]: string } = {
+  "poem1.png": poem1,
+  "poem2.png": poem2,
+  "poem3.png": poem3,
+  "poem4.png": poem4,
+  "poem5.png": poem5,
+};
+
+// Define the structure of a Poem from the DB
+interface Poem {
+  id: number;
+  title: string;
+  image_name: string;
+  youtube_link: string;
+}
 
 const Features: React.FC = () => {
+  const [poems, setPoems] = useState<Poem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPoems = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/poems`);
+        if (!response.ok) throw new Error("Failed to fetch");
+        const data = await response.json();
+        setPoems(data);
+      } catch (error) {
+        console.error("Error loading poems:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPoems();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="animate-spin text-indigo-500" size={48} />
+      </div>
+    );
+  }
+
   return (
     <section className="py-10 px-4 max-w-[1400px] mx-auto text-center relative overflow-hidden">
       
@@ -34,15 +72,15 @@ const Features: React.FC = () => {
         {/* The Scrolling Track */}
         <div className="flex gap-8 w-max animate-scroll-loop group">
           {/* Tripling the items ensures a seamless infinite loop with no empty space */}
-          {[...poems, ...poems, ...poems].map((poem, index) => (
+          {poems.length > 0 && [...poems, ...poems, ...poems].map((poem, index) => (
             <div 
               key={`${poem.id}-${index}`} 
               className="flex-shrink-0 w-[320px] bg-white rounded-[2rem] p-6 shadow-xl border-2 border-slate-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-indigo-200 group/card cursor-pointer"
             >
-              {/* MEDIUM Image Card */}
+              {/* Image Card */}
               <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-5 shadow-sm">
                 <img 
-                  src={poem.img} 
+                  src={imageMap[poem.image_name] || poem1} // Fallback to poem1 if name doesn't match
                   alt={poem.title} 
                   className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
                 />
@@ -56,7 +94,7 @@ const Features: React.FC = () => {
               
               {/* Play Button */}
               <a 
-                href={poem.link} 
+                href={poem.youtube_link} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full bg-rose-500 hover:bg-rose-600 text-white font-black text-lg py-3 rounded-xl transition-all shadow-md active:scale-95"
@@ -80,7 +118,6 @@ const Features: React.FC = () => {
           animation: scrollLoop 25s linear infinite;
         }
 
-        /* This stops the movement when ANY part of the card is hovered */
         .group:hover {
           animation-play-state: paused;
         }

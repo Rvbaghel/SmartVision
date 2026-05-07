@@ -39,12 +39,38 @@ class PinVerifySchema(BaseModel):
     user_email: str
     pin: str
 
+class PoemSchema(BaseModel):
+    id: int
+    title: str
+    image_name: str
+    youtube_link: str
+
+    class Config:
+        from_attributes = True
+
 # --- HELPER FUNCTIONS ---
 def hash_pin(pin: str):
     return pwd_context.hash(pin)
 
 def verify_pin(plain_pin, hashed_pin):
     return pwd_context.verify(plain_pin, hashed_pin)
+
+# --- POEM ENDPOINTS ---
+
+@app.get("/api/poems", response_model=list[PoemSchema])
+def get_poems(db: Session = Depends(database.get_db)):
+    return db.query(models.Poem).all()
+
+@app.post("/api/admin/add-poem")
+def add_poem(poem: PoemSchema, db: Session = Depends(database.get_db)):
+    new_poem = models.Poem(
+        title=poem.title,
+        image_name=poem.image_name,
+        youtube_link=poem.youtube_link
+    )
+    db.add(new_poem)
+    db.commit()
+    return {"message": "Poem added successfully"}           
 
 # --- PARENT SECURITY ENDPOINTS ---
 
@@ -116,29 +142,36 @@ def update_usage(email: str, db: Session = Depends(database.get_db)):
         "show_rating_popup": show_popup
     }
 
-# @app.post("/api/submit-rating")
-# def submit_rating(data: FeedbackSchema, db: Session = Depends(database.get_db)):
-#     # 1. Update user stats to stop reminders
-#     stats = db.query(models.UserStats).filter(models.UserStats.user_email == data.user_email).first()
-#     if stats:
-#         stats.has_rated = True
-        
-#     # 2. Save feedback entry
-#     new_feedback = models.Feedback(
-#         user_email=data.user_email, 
-#         rating=data.rating, 
-#         milestone=data.milestone
-#     )
-#     db.add(new_feedback)
-#     db.commit()
-#     return {"status": "success", "message": "Thank you for your rating!"}
-
-# --- ADMIN DASHBOARD GETTERS (Fixed 404s) ---
-
-# @app.get("/api/get-all-feedback")
-# def get_all_feedback(db: Session = Depends(database.get_db)):
-#     return db.query(models.Feedback).all()
-
 @app.get("/api/get-all-usage")
 def get_all_usage(db: Session = Depends(database.get_db)):
     return db.query(models.UserStats).all()
+
+
+# --- UPDATE POEM ---
+@app.put("/api/admin/update-poem/{poem_id}")
+def update_poem(poem_id: int, data: PoemSchema, db: Session = Depends(database.get_db)):
+    poem = db.query(models.Poem).filter(models.Poem.id == poem_id).first()
+    
+    if not poem:
+        raise HTTPException(status_code=404, detail="Poem not found")
+    
+    # Update the fields
+    poem.title = data.title
+    poem.youtube_link = data.youtube_link
+    poem.image_name = data.image_name # Keeping this in case you change the image
+    
+    db.commit()
+    return {"status": "Success", "message": f"Poem '{poem.title}' updated successfully"}
+
+# --- DELETE POEM BY TITLE ---
+@app.delete("/api/admin/delete-poem/{title}")
+def delete_poem_by_title(title: str, db: Session = Depends(database.get_db)):
+    # We use .filter() with the title string
+    poem = db.query(models.Poem).filter(models.Poem.title == title).first()
+    
+    if not poem:
+        raise HTTPException(status_code=404, detail=f"No poem found with title: {title}")
+    
+    db.delete(poem)
+    db.commit()
+    return {"status": "Success", "message": f"Deleted poem: {title}"}
