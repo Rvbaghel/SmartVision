@@ -4,6 +4,8 @@ import { ArrowLeft, Star, Trophy, RefreshCw, PlayCircle, Gamepad2 } from "lucide
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "../Components/Navbar";
+import { getAuth } from "firebase/auth"; // Added for tracking
+import { API_BASE_URL } from "../config/api"; // Added for API calls
 
 const colorData = [
   { name: "Red", hex: "#ff0303", img: "https://img.icons8.com/color/96/strawberry.png" },
@@ -14,17 +16,38 @@ const colorData = [
   { name: "Purple", hex: "#8400ff", img: "https://img.icons8.com/color/96/grapes.png"},
   { name: "Pink", hex: "#ff0080", img: "https://img.icons8.com/color/96/flamingo.png" },
   { name: "Brown", hex: "#6e2800", img: "https://img.icons8.com/color/96/chocolate-bar.png" },
-
 ];
 
 const ColorMatchPlay = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [target, setTarget] = useState(colorData[0]);
   const [options, setOptions] = useState<typeof colorData>([]);
   const [stars, setStars] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0); // Progress Tracker
   const [isWinner, setIsWinner] = useState(false);
   
   const WINNING_SCORE = 10;
+
+  // --- SAVE PROGRESS API ---
+  const saveGameProgress = async (finalWrongCount: number) => {
+    if (!user?.email) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/save-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_email: user.email,
+          game_name: "Color Match",
+          wrong_count: finalWrongCount
+        })
+      });
+    } catch (err) {
+      console.error("Failed to save color progress", err);
+    }
+  };
 
   const speak = (text: string) => {
     window.speechSynthesis.cancel();
@@ -61,6 +84,7 @@ const ColorMatchPlay = () => {
 
       if (newScore >= WINNING_SCORE) {
         triggerWin();
+        saveGameProgress(wrongCount); // Trigger Save on Win
       } else {
         new Audio("/success.mp3").play().catch(() => {});
         confetti({
@@ -73,6 +97,7 @@ const ColorMatchPlay = () => {
         setTimeout(startNewRound, 2000);
       }
     } else {
+      setWrongCount(prev => prev + 1); // Track mistake
       speak(`That's ${choice.name}. Look for ${target.name}!`);
     }
   };
@@ -94,7 +119,7 @@ const ColorMatchPlay = () => {
 
       <div className={`relative z-10 pt-24 px-6 max-w-4xl mx-auto w-full flex flex-col items-center transition-all duration-500 ${isWinner ? 'blur-md pointer-events-none' : ''}`}>
         
-        {/* Header - Compact */}
+        {/* Header */}
         <div className="w-full flex justify-between items-center mb-4">
           <button onClick={() => navigate("/games/colors/info")} className="bg-white p-2 rounded-2xl shadow-md text-blue-600 hover:scale-110 transition-transform border border-blue-100">
             <ArrowLeft size={22} />
@@ -106,7 +131,7 @@ const ColorMatchPlay = () => {
           </div>
         </div>
 
-        {/* Question Area - Compact */}
+        {/* Question Area */}
         <motion.div 
             key={target.name}
             initial={{ y: -10, opacity: 0 }}
@@ -118,7 +143,7 @@ const ColorMatchPlay = () => {
           </h1>
         </motion.div>
 
-        {/* Small Choice Grid - Adjusted for no scrolling */}
+        {/* Choice Grid */}
         <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
           {options.map((color) => (
             <motion.button
@@ -138,7 +163,6 @@ const ColorMatchPlay = () => {
           ))}
         </div>
 
-        {/* Action Button - Small */}
         <button onClick={startNewRound} className="mt-6 text-blue-300 hover:text-blue-500 transition-colors">
             <RefreshCw size={24} />
         </button>
@@ -153,9 +177,11 @@ const ColorMatchPlay = () => {
                 <Trophy size={60} className="text-white fill-white" />
               </div>
               <h2 className="mt-10 text-4xl font-black text-slate-800 mb-2">WOW!</h2>
-              <p className="text-lg font-bold text-slate-600 mb-6">You are a Color Superstar!</p>
+              <p className="text-lg font-bold text-slate-600 mb-2">You are a Color Superstar!</p>
+              <p className="text-sm font-black text-rose-500 mb-6 uppercase tracking-widest">Mistakes: {wrongCount}</p>
+              
               <div className="flex flex-col gap-3">
-                <button onClick={() => { setStars(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <button onClick={() => { setStars(0); setWrongCount(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
                   <PlayCircle size={24} /> PLAY AGAIN
                 </button>
                 <button onClick={() => navigate("/")} className="bg-blue-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">

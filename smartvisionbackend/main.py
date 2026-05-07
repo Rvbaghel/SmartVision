@@ -48,6 +48,12 @@ class PoemSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class GameSessionSchema(BaseModel):
+    user_email: str
+    game_name: str
+    wrong_count: int
+
+
 # --- HELPER FUNCTIONS ---
 def hash_pin(pin: str):
     return pwd_context.hash(pin)
@@ -175,3 +181,23 @@ def delete_poem_by_title(title: str, db: Session = Depends(database.get_db)):
     db.delete(poem)
     db.commit()
     return {"status": "Success", "message": f"Deleted poem: {title}"}
+
+
+
+@app.post("/api/save-session")
+def save_session(data: GameSessionSchema, db: Session = Depends(database.get_db)):
+    new_session = models.GameSession(
+        user_email=data.user_email,
+        game_name=data.game_name,
+        wrong_count=data.wrong_count
+    )
+    db.add(new_session)
+    db.commit()
+    return {"status": "Success", "message": "Progress recorded!"}
+
+@app.get("/api/get-progress/{email}")
+def get_progress(email: str, db: Session = Depends(database.get_db)):
+    # Returns all sessions for this child, newest first
+    return db.query(models.GameSession).filter(
+        models.GameSession.user_email == email
+    ).order_by(models.GameSession.created_at.desc()).all()

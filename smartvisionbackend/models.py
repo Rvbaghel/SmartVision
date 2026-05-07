@@ -47,4 +47,16 @@ class Poem(Base):
     title = Column(String(255), nullable=False)
     image_name = Column(String(255), nullable=False)  # Stores "poem1.png"
     youtube_link = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)  
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# models.py
+
+class GameSession(Base):
+    __tablename__ = "game_sessions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String, index=True)
+    game_name = Column(String)    # e.g., "Alphabet Adventure"
+    wrong_count = Column(Integer) # How many mistakes were made
+    created_at = Column(DateTime, default=datetime.utcnow)      

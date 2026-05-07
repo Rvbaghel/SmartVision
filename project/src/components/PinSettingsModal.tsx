@@ -53,7 +53,7 @@ const PinSettingsModal = ({ userEmail, isPinSet, onClose, onSuccess }: any) => {
           {isPinSet && !isResetMode ? (
             <div className="space-y-4">
               <div className="bg-emerald-50 text-emerald-700 p-4 rounded-2xl border border-emerald-100 font-bold text-sm">
-                ✅ PIN is already generated!
+                 PIN is already generated!
               </div>
               <p className="text-slate-500 text-xs font-bold leading-relaxed">
                 If you have forgotten your PIN or want to change it, you can reset it below.

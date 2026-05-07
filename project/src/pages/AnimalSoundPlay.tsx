@@ -4,6 +4,8 @@ import { ArrowLeft, Star, Trophy, Volume2, PlayCircle, Gamepad2, RefreshCw } fro
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "../Components/Navbar";
+import { getAuth } from "firebase/auth"; // Added for user email
+import { API_BASE_URL } from "../config/api"; // Added for API calls
 
 const animalData = [
   { name: "Bird", img: "https://img.icons8.com/color/144/bird.png", sound: "/sounds/bird.mp3", color: "bg-blue-100" },
@@ -16,12 +18,36 @@ const animalData = [
 
 const AnimalSoundPlay = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [target, setTarget] = useState(animalData[0]);
   const [options, setOptions] = useState<typeof animalData>([]);
   const [stars, setStars] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0); // Track mistakes
   const [isWinner, setIsWinner] = useState(false);
 
   const WINNING_SCORE = 10;
+
+  // --- NEW: Save Session to Backend ---
+  const saveGameProgress = async (finalWrongCount: number) => {
+    if (!user?.email) return;
+
+    try {
+      await fetch(`${API_BASE_URL}/api/save-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_email: user.email,
+          game_name: "Animal Sounds",
+          wrong_count: finalWrongCount
+        })
+      });
+      console.log("Progress saved successfully!");
+    } catch (err) {
+      console.error("Failed to save progress", err);
+    }
+  };
 
   const speak = (text: string) => {
     window.speechSynthesis.cancel();
@@ -45,7 +71,6 @@ const AnimalSoundPlay = () => {
     setTarget(randomTarget);
     setOptions(mixed);
 
-    // Sequence: Voice asks -> then play animal sound
     speak("Listen closely... Who made this sound?");
     setTimeout(() => {
       playAnimalSound(randomTarget.sound);
@@ -67,6 +92,9 @@ const AnimalSoundPlay = () => {
         setIsWinner(true);
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         speak("You are an animal expert! Congratulations!");
+        
+        // --- TRIGGER SAVE ON WIN ---
+        saveGameProgress(wrongCount);
       } else {
         new Audio("/success.mp3").play().catch(() => {});
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 } });
@@ -74,6 +102,8 @@ const AnimalSoundPlay = () => {
         setTimeout(startNewRound, 2500);
       }
     } else {
+      // --- INCREMENT WRONG COUNT ---
+      setWrongCount(prev => prev + 1);
       speak(`Not quite! Listen again.`);
       playAnimalSound(target.sound);
     }
@@ -140,9 +170,10 @@ const AnimalSoundPlay = () => {
                 <Trophy size={60} className="text-white fill-white" />
               </div>
               <h2 className="mt-10 text-4xl font-black text-slate-800 mb-2">AMAZING!</h2>
-              <p className="text-lg font-bold text-slate-600 mb-8">You know all your animal friends!</p>
+              <p className="text-lg font-bold text-slate-600 mb-2">You know all your animal friends!</p>
+              <p className="text-sm font-black text-rose-500 mb-8 uppercase tracking-widest">Mistakes: {wrongCount}</p>
               <div className="flex flex-col gap-3">
-                <button onClick={() => { setStars(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95">
+                <button onClick={() => { setStars(0); setWrongCount(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95">
                   <PlayCircle size={24} /> PLAY AGAIN
                 </button>
                 <button onClick={() => navigate("/")} className="bg-blue-500 text-white py-4 rounded-2xl text-xl font-black shadow-md flex items-center justify-center gap-2 active:scale-95">

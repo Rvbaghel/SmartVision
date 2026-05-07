@@ -44,6 +44,7 @@ import MemoryMatchLearn from "./pages/MemoryMatchLearn";
 
 import AnimalSoundLearn from "./pages/AnimalSoundLearn";
 
+import ShapeLearning from './pages/ShapeLearning';
 // import ArtStudioInfo from "./pages/ArtStudioInfo";
 
 
@@ -64,8 +65,11 @@ import MemoryMatchPlay from "./pages/MemoryMatchPlay";
 
 import AnimalSoundPlay from "./pages/AnimalSoundPlay";
 
+import ShapeHunterPlay from './pages/ShapeHunterPlay';
+
 // import ArtStudioPlay from "./pages/ArtStudioPlay";
 
+import ChildProgress from './pages/ChildProgress';
 
 function App() {
   const [showRating, setShowRating] = useState(false);
@@ -118,14 +122,17 @@ function App() {
         <Route path="/games/color/learning" element={<ColorMatchLearn/>} />
         <Route path="/games/memory/learning" element={<MemoryMatchLearn/>} />
         <Route path="/games/animal/learning" element={<AnimalSoundLearn/>} />
+        <Route path="/game/shapes/learn" element={<ShapeLearning/>} />
          
         {/* Playing Phase pages*/}
         <Route path="/games/alphabet/play" element={<AlphabetPlay />} />
+        <Route path="/games/shapehunter/play" element={<ShapeHunterPlay />} />
+        
         <Route path="/games/numbercounting/play" element={<NumberCountingPlay />} />
         <Route path="/games/colors/play" element={<ColorMatchPlay />} />
         <Route path="/games/memory/play" element={<MemoryMatchPlay />} />
         <Route path="/games/animal/play" element={<AnimalSoundPlay />} />
-        
+        <Route path="/child-progress" element={<ChildProgress />} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </ScreenTimeManager>

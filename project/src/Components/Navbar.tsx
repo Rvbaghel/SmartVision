@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { LogOut, Clock, ShieldCheck, Timer } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import { LogOut, Clock, ShieldCheck, Timer, BarChart3, Lock } from "lucide-react"; // Added icons
 import { useState, useEffect } from "react";
 import { signInWithGoogle } from "../auth";
 import { auth } from "../firebase";
@@ -9,95 +9,93 @@ import SetTimerModal from "./SetTimerModal";
 import { API_BASE_URL } from "../config/api";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-  const [timeLeft, setTimeLeft] = useState<string | null>(null); // ✅ Starts as null
+  const [timeLeft, setTimeLeft] = useState<string | null>(null);
   const [isPinSet, setIsPinSet] = useState<boolean>(false);
+  const [hasProgress, setHasProgress] = useState<boolean>(false); // ✅ New state
   
   const [showPinModal, setShowPinModal] = useState(false);
   const [showTimerModal, setShowTimerModal] = useState(false);
 
-  // ✅ 1. Monitor Auth State & Check PIN Status
+  // ✅ 1. Check PIN and Progress Status
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser?.email) {
         localStorage.setItem("userEmail", currentUser.email);
         try {
-          const response = await fetch(`${API_BASE_URL}/api/check-pin-status/${currentUser.email}`);
-          if (response.ok) {
-            const data = await response.json();
+          // Check PIN
+          const pinRes = await fetch(`${API_BASE_URL}/api/check-pin-status/${currentUser.email}`);
+          if (pinRes.ok) {
+            const data = await pinRes.json();
             setIsPinSet(data.is_pin_set);
           }
+
+          // ✅ Check if child has played any games
+          const progRes = await fetch(`${API_BASE_URL}/api/get-progress/${currentUser.email}`);
+          if (progRes.ok) {
+            const progressData = await progRes.json();
+            setHasProgress(progressData.length > 0);
+          }
+
         } catch (error) {
-          localStorage.removeItem("userEmail");
-          console.error("Error fetching PIN status:", error);
+          console.error("Error fetching navbar data:", error);
         }
       } else {
         setIsPinSet(false);
+        setHasProgress(false);
       }
     });
     return () => unsubscribe();
   }, []);
 
-  // ✅ 2. Enhanced Live Timer Logic
+  // ✅ 2. Live Timer Logic (remains same)
   useEffect(() => {
     const updateTimer = () => {
       const end = localStorage.getItem("screenTimeEnd");
-      
-      if (!end) {
-        setTimeLeft(null); // ✅ Keep hidden if no timer set
-        return;
-      }
-
+      if (!end) { setTimeLeft(null); return; }
       const remaining = Math.round((parseInt(end, 10) - Date.now()) / 1000);
-      
       if (remaining > 0) {
         const mins = Math.floor(remaining / 60);
         const secs = remaining % 60;
         setTimeLeft(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
       } else {
         setTimeLeft("0:00");
-        // Optional: clear on finish so it hides on next refresh
-        // localStorage.removeItem("screenTimeEnd");
       }
     };
-
-    // Run every second
     const interval = setInterval(updateTimer, 1000);
-    
-    // Listen for storage changes (when modal sets the time)
     window.addEventListener("storage", updateTimer);
-    
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("storage", updateTimer);
-    };
+    return () => { clearInterval(interval); window.removeEventListener("storage", updateTimer); };
   }, []);
 
-  const handleTimerClick = () => {
+  const handleProgressClick = () => {
     if (!user) {
-      alert("Please login to use the Screen Timer feature!");
+      alert("Please login to see your child's progress!");
       return;
     }
-    if (!isPinSet) {
-      setShowPinModal(true);
+    if (!hasProgress) {
+      alert("Note: Play a game first to unlock progress tracking!");
       return;
     }
+    // If they have progress, take them to the dashboard
+    navigate("/child-progress");
+  };
+
+  const handleTimerClick = () => {
+    if (!user) { alert("Please login to use the Screen Timer feature!"); return; }
+    if (!isPinSet) { setShowPinModal(true); return; }
     setShowTimerModal(true);
   };
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem("screenTimeEnd"); // Clear timer on logout
-      localStorage.removeItem("userEmail"); // ✅ Clear email
+      localStorage.clear();
       setUser(null);
       setIsPinSet(false);
-      setShowPinModal(false);
-      setShowTimerModal(false);
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
+      navigate("/");
+    } catch (error) { console.error("Logout failed", error); }
   };
 
   return (
@@ -111,14 +109,25 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-2 md:gap-4">
             
+            {/* ✅ NEW: Progress Button */}
+            <button 
+              onClick={handleProgressClick}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl border-b-4 transition-all active:border-0 active:translate-y-1 ${
+                hasProgress 
+                ? 'bg-purple-100 border-purple-300 text-purple-700' 
+                : 'bg-slate-50 border-slate-200 text-slate-400'
+              }`}
+            >
+              {hasProgress ? <BarChart3 size={18} /> : <Lock size={16} />}
+              <span className="text-xs font-black uppercase hidden sm:block">Progress</span>
+            </button>
+
             <button 
               onClick={handleTimerClick}
               className={`flex items-center gap-2 px-4 py-2 rounded-2xl border-b-4 transition-all active:border-0 active:translate-y-1 ${
-                user 
-                  ? 'bg-amber-100 border-amber-300 text-amber-700' 
-                  : 'bg-slate-50 border-slate-200 text-slate-400 opacity-80'
+                user ? 'bg-amber-100 border-amber-300 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-400 opacity-80'
               }`}
             >
               <Timer size={18} />
@@ -135,15 +144,9 @@ const Navbar = () => {
               </button>
             )}
 
-            <div className="h-8 w-[2px] bg-slate-200 hidden md:block" />
-
-            {/* ✅ DYNAMIC TIMER DISPLAY: Only appears when timeLeft is not null */}
             {timeLeft && (
-              <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 animate-in fade-in slide-in-from-right-2">
-                <Clock 
-                  size={18} 
-                  className={`${timeLeft !== "0:00" ? "text-emerald-500 animate-pulse" : "text-red-500"}`} 
-                />
+              <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100">
+                <Clock size={18} className={`${timeLeft !== "0:00" ? "text-emerald-500 animate-pulse" : "text-red-500"}`} />
                 <span className={`font-black text-sm tabular-nums ${timeLeft !== "0:00" ? "text-slate-700" : "text-red-600"}`}>
                   {timeLeft}
                 </span>
@@ -166,12 +169,8 @@ const Navbar = () => {
               <button 
                 className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-2xl font-black hover:scale-105 transition-all shadow-[0_5px_0_0_#059669] active:translate-y-1 active:shadow-none"
                 onClick={async () => {
-                  try {
-                    const loggedUser = await signInWithGoogle();
-                    if (loggedUser) setUser(loggedUser);
-                  } catch (err) {
-                    console.error("Login failed:", err);
-                  }
+                  const loggedUser = await signInWithGoogle();
+                  if (loggedUser) setUser(loggedUser);
                 }}
               >
                 <span className="text-sm tracking-widest uppercase">Login</span>
@@ -186,10 +185,7 @@ const Navbar = () => {
           userEmail={user.email} 
           isPinSet={isPinSet}
           onClose={() => setShowPinModal(false)} 
-          onSuccess={() => {
-            setIsPinSet(true);
-            setShowPinModal(false);
-          }} 
+          onSuccess={() => { setIsPinSet(true); setShowPinModal(false); }} 
         />
       )}
       

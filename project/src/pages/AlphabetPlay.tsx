@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Trophy, RefreshCw, PlayCircle, Gamepad2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "../Components/Navbar";
+import { getAuth } from "firebase/auth"; // For tracking user
+import { API_BASE_URL } from "../config/api"; // For progress API
 
 const alphabetData = [
   { letter: "A", word: "Apple", type: "vowel", color: "bg-rose-400", emoji: "🍎" },
@@ -36,14 +38,36 @@ const alphabetData = [
 
 const AlphabetPlay = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [target, setTarget] = useState(alphabetData[0]);
   const [options, setOptions] = useState<typeof alphabetData>([]);
   const [stars, setStars] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0); // Progress Tracker
   const [isWinner, setIsWinner] = useState(false);
 
   const WINNING_SCORE = 10;
 
-  const startNewRound = () => {
+  // --- SAVE PROGRESS API ---
+  const saveGameProgress = async (finalWrongCount: number) => {
+    if (!user?.email) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/save-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_email: user.email,
+          game_name: "Alphabet Adventure",
+          wrong_count: finalWrongCount
+        })
+      });
+    } catch (err) {
+      console.error("Failed to save alphabet progress", err);
+    }
+  };
+
+  const startNewRound = useCallback(() => {
     const randomTarget = alphabetData[Math.floor(Math.random() * alphabetData.length)];
     const others = alphabetData
       .filter(a => a.letter !== randomTarget.letter)
@@ -59,11 +83,11 @@ const AlphabetPlay = () => {
     const msg = new SpeechSynthesisUtterance(`Where is the letter for ${randomTarget.word}?`);
     msg.pitch = 1.3;
     window.speechSynthesis.speak(msg);
-  };
+  }, []);
 
   useEffect(() => {
     startNewRound();
-  }, []);
+  }, [startNewRound]);
 
   const handleChoice = (choice: string) => {
     if (isWinner) return;
@@ -74,6 +98,7 @@ const AlphabetPlay = () => {
       
       if (newScore >= WINNING_SCORE) {
         triggerWin();
+        saveGameProgress(wrongCount); // Save when 10 stars reached
       } else {
         new Audio("/success.mp3").play().catch(() => {});
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 } });
@@ -82,6 +107,7 @@ const AlphabetPlay = () => {
         setTimeout(startNewRound, 2000);
       }
     } else {
+      setWrongCount(prev => prev + 1); // Track the mistake
       const msg = new SpeechSynthesisUtterance(`Not quite! Look for the ${target.word}`);
       window.speechSynthesis.speak(msg);
     }
@@ -89,7 +115,6 @@ const AlphabetPlay = () => {
 
   const triggerWin = () => {
     setIsWinner(true);
-    // Mega Confetti Blast
     const end = Date.now() + 3000;
     (function frame() {
       confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 } });
@@ -104,6 +129,7 @@ const AlphabetPlay = () => {
 
   const resetGame = () => {
     setStars(0);
+    setWrongCount(0); // Reset progress for new session
     setIsWinner(false);
     startNewRound();
   };
@@ -112,7 +138,6 @@ const AlphabetPlay = () => {
     <div className="min-h-screen bg-indigo-50 font-sans pb-20 relative overflow-hidden">
       <Navbar />
 
-      {/* Main Game Content (Blurs when winner popup shows) */}
       <div className={`pt-28 px-6 max-w-4xl mx-auto flex flex-col items-center transition-all duration-500 ${isWinner ? 'blur-md pointer-events-none' : ''}`}>
         
         {/* Header */}
@@ -179,7 +204,8 @@ const AlphabetPlay = () => {
               </div>
 
               <h2 className="mt-12 text-5xl font-black text-slate-800 mb-2">AMAZING!</h2>
-              <p className="text-xl font-bold text-slate-600 mb-8">You are an Alphabet Hero!</p>
+              <p className="text-xl font-bold text-slate-600 mb-2">You are an Alphabet Hero!</p>
+              <p className="text-sm font-black text-rose-500 mb-8 uppercase tracking-widest">Mistakes: {wrongCount}</p>
 
               <div className="flex flex-col gap-4">
                 <button 

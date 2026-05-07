@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Trophy, RefreshCw, PlayCircle, Gamepad2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "../Components/Navbar";
+import { getAuth } from "firebase/auth"; // For user tracking
+import { API_BASE_URL } from "../config/api"; // For progress API
 
 const playThemes = [
   { icon: "🧁", name: "cupcakes" },
@@ -15,7 +17,11 @@ const playThemes = [
 
 const NumberCountingPlay = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [stars, setStars] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0); // Progress Tracker
   const [isWinner, setIsWinner] = useState(false);
   const [targetNum, setTargetNum] = useState(0);
   const [options, setOptions] = useState<number[]>([]);
@@ -23,11 +29,29 @@ const NumberCountingPlay = () => {
   
   const WINNING_SCORE = 10;
 
-  const startNewRound = () => {
-    const num = Math.floor(Math.random() * 10) + 1; // 1 to 10 for nursery/KG
+  // --- SAVE PROGRESS API ---
+  const saveGameProgress = async (finalWrongCount: number) => {
+    if (!user?.email) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/save-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_email: user.email,
+          game_name: "Number Counting",
+          wrong_count: finalWrongCount
+        })
+      });
+      console.log("Counting progress saved!");
+    } catch (err) {
+      console.error("Failed to save counting progress", err);
+    }
+  };
+
+  const startNewRound = useCallback(() => {
+    const num = Math.floor(Math.random() * 10) + 1; 
     setTargetNum(num);
     
-    // Generate 3 random options (1 correct, 2 wrong)
     const ops = new Set<number>();
     ops.add(num);
     while (ops.size < 3) {
@@ -39,17 +63,16 @@ const NumberCountingPlay = () => {
     const theme = playThemes[Math.floor(Math.random() * playThemes.length)];
     setCurrentTheme(theme);
 
-    // Voice instruction
     window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(`How many ${theme.name} can you see?`);
     msg.pitch = 1.3;
     msg.rate = 0.9;
     window.speechSynthesis.speak(msg);
-  };
+  }, []);
 
   useEffect(() => {
     startNewRound();
-  }, []);
+  }, [startNewRound]);
 
   const handleChoice = (choice: number) => {
     if (isWinner) return;
@@ -60,6 +83,7 @@ const NumberCountingPlay = () => {
       
       if (newScore >= WINNING_SCORE) {
         triggerWin();
+        saveGameProgress(wrongCount); // Save session on win
       } else {
         new Audio("/success.mp3").play().catch(() => {});
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.8 } });
@@ -68,6 +92,7 @@ const NumberCountingPlay = () => {
         setTimeout(startNewRound, 2000);
       }
     } else {
+      setWrongCount(prev => prev + 1); // Track mistake
       const msg = new SpeechSynthesisUtterance(`Oops! Let's try counting again.`);
       window.speechSynthesis.speak(msg);
     }
@@ -89,7 +114,6 @@ const NumberCountingPlay = () => {
     <div className="min-h-screen bg-sky-50 font-sans pb-20 relative overflow-hidden">
       <Navbar />
 
-      {/* Main Game Content */}
       <div className={`pt-28 px-6 max-w-4xl mx-auto flex flex-col items-center transition-all duration-500 ${isWinner ? 'blur-md pointer-events-none' : ''}`}>
         
         {/* Header */}
@@ -104,7 +128,7 @@ const NumberCountingPlay = () => {
           </div>
         </div>
 
-        {/* The Picnic Blanket (Items to Count) */}
+        {/* Picnic Blanket */}
         <div className="w-full bg-white min-h-[350px] rounded-[4rem] shadow-2xl border-b-[12px] border-blue-100 p-10 flex flex-wrap items-center justify-center gap-6 mb-12">
           <AnimatePresence>
             {Array.from({ length: targetNum }).map((_, i) => (
@@ -126,7 +150,7 @@ const NumberCountingPlay = () => {
           </AnimatePresence>
         </div>
 
-        {/* The Answer Bubbles */}
+        {/* Answer Bubbles */}
         <div className="flex flex-wrap justify-center gap-6">
           {options.map((num) => (
             <motion.button
@@ -155,9 +179,11 @@ const NumberCountingPlay = () => {
                 <Trophy size={80} className="text-white fill-white" />
               </div>
               <h2 className="mt-14 text-5xl font-black text-slate-800 mb-2">HERO!</h2>
-              <p className="text-xl font-bold text-slate-600 mb-8">You counted all the way to 10!</p>
+              <p className="text-xl font-bold text-slate-600 mb-2">You counted all the way to 10!</p>
+              <p className="text-sm font-black text-rose-500 mb-8 uppercase tracking-widest">Mistakes: {wrongCount}</p>
+              
               <div className="flex flex-col gap-4">
-                <button onClick={() => { setStars(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-5 rounded-3xl text-2xl font-black shadow-lg shadow-emerald-200 flex items-center justify-center gap-3">
+                <button onClick={() => { setStars(0); setWrongCount(0); setIsWinner(false); startNewRound(); }} className="bg-emerald-500 text-white py-5 rounded-3xl text-2xl font-black shadow-lg shadow-emerald-200 flex items-center justify-center gap-3">
                   <PlayCircle size={32} /> PLAY AGAIN
                 </button>
                 <button onClick={() => navigate("/")} className="bg-blue-500 text-white py-5 rounded-3xl text-2xl font-black shadow-lg shadow-blue-200 flex items-center justify-center gap-3">

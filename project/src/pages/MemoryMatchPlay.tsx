@@ -4,8 +4,9 @@ import { ArrowLeft, Star, Trophy, PlayCircle, Gamepad2, HelpCircle } from "lucid
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "../Components/Navbar";
+import { getAuth } from "firebase/auth"; // For tracking user
+import { API_BASE_URL } from "../config/api"; // For progress API
 
-// We use your reliable animal list
 const animals = [
   { name: "Lion", img: "https://img.icons8.com/color/144/lion.png" },
   { name: "Elephant", img: "https://img.icons8.com/color/144/elephant.png" },
@@ -19,11 +20,15 @@ const animals = [
 
 const MemoryMatchPlay = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const [cards, setCards] = useState<any[]>([]);
   const [flipped, setFlipped] = useState<number[]>([]);
   const [solved, setSolved] = useState<number[]>([]);
   const [disabled, setDisabled] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
+  const [wrongCount, setWrongCount] = useState(0); // Tracking mistakes
 
   const speak = (text: string) => {
     window.speechSynthesis.cancel();
@@ -33,8 +38,25 @@ const MemoryMatchPlay = () => {
     window.speechSynthesis.speak(msg);
   };
 
+  // --- SAVE PROGRESS API ---
+  const saveGameProgress = async (finalWrongCount: number) => {
+    if (!user?.email) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/save-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_email: user.email,
+          game_name: "Memory Match",
+          wrong_count: finalWrongCount
+        })
+      });
+    } catch (err) {
+      console.error("Failed to save memory progress", err);
+    }
+  };
+
   const initializeGame = useCallback(() => {
-    // Create pairs and shuffle
     const pairCards = [...animals, ...animals]
       .map((animal, index) => ({ ...animal, id: index }))
       .sort(() => Math.random() - 0.5);
@@ -44,6 +66,7 @@ const MemoryMatchPlay = () => {
     setSolved([]);
     setIsWinner(false);
     setDisabled(false);
+    setWrongCount(0); // Reset count for new game
     speak("Can you find all the matching friends?");
   }, []);
 
@@ -63,16 +86,18 @@ const MemoryMatchPlay = () => {
       
       if (firstCard.name === name) {
         // MATCH FOUND
-        setSolved([...solved, newFlipped[0], id]);
+        const newSolved = [...solved, newFlipped[0], id];
+        setSolved(newSolved);
         setFlipped([]);
         setDisabled(false);
         speak(`Yay! A pair of ${name}s!`);
         
-        if (solved.length + 2 === cards.length) {
+        if (newSolved.length === cards.length) {
           triggerWin();
         }
       } else {
-        // NO MATCH
+        // NO MATCH -> This is a "wrong move"
+        setWrongCount(prev => prev + 1);
         setTimeout(() => {
           setFlipped([]);
           setDisabled(false);
@@ -85,6 +110,7 @@ const MemoryMatchPlay = () => {
     setIsWinner(true);
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     speak("Amazing! You have a super memory!");
+    saveGameProgress(wrongCount); // Save data to backend
   };
 
   return (
@@ -105,7 +131,7 @@ const MemoryMatchPlay = () => {
           </div>
         </div>
 
-        {/* Game Grid - 4x4 for 16 cards */}
+        {/* Game Grid */}
         <div className="grid grid-cols-4 gap-3 md:gap-4 w-full max-w-2xl">
           {cards.map((card) => {
             const isFlipped = flipped.includes(card.id) || solved.includes(card.id);
@@ -120,16 +146,11 @@ const MemoryMatchPlay = () => {
                   className="relative w-full h-full preserve-3d cursor-pointer"
                   onClick={() => handleCardClick(card.id, card.name)}
                 >
-                  {/* Front of Card (Hidden Side) */}
                   <div className="absolute inset-0 backface-hidden bg-purple-400 rounded-2xl md:rounded-[2rem] shadow-lg border-b-8 border-purple-600 flex items-center justify-center text-white">
                     <HelpCircle size={40} className="opacity-50" />
                   </div>
 
-                  {/* Back of Card (Animal Side) */}
-                  <div 
-                    className={`absolute inset-0 backface-hidden bg-white rounded-2xl md:rounded-[2rem] shadow-xl border-b-8 flex items-center justify-center p-2 md:p-4 rotate-y-180 
-                    ${isMatched ? 'border-green-400' : 'border-purple-200'}`}
-                  >
+                  <div className={`absolute inset-0 backface-hidden bg-white rounded-2xl md:rounded-[2rem] shadow-xl border-b-8 flex items-center justify-center p-2 md:p-4 rotate-y-180 ${isMatched ? 'border-green-400' : 'border-purple-200'}`}>
                     <img src={card.img} alt={card.name} className="w-full h-full object-contain" />
                   </div>
                 </motion.div>
@@ -148,7 +169,9 @@ const MemoryMatchPlay = () => {
                 <Trophy size={60} className="text-white fill-white" />
               </div>
               <h2 className="mt-10 text-4xl font-black text-slate-800 mb-2">GENIUS!</h2>
-              <p className="text-lg font-bold text-slate-600 mb-8">You found all the animals!</p>
+              <p className="text-lg font-bold text-slate-600 mb-2">You found all the animals!</p>
+              <p className="text-sm font-black text-rose-500 mb-8 uppercase tracking-widest">Mistakes: {wrongCount}</p>
+              
               <div className="flex flex-col gap-3">
                 <button onClick={initializeGame} className="bg-emerald-500 text-white py-4 rounded-2xl text-xl font-black shadow-lg flex items-center justify-center gap-2">
                   <PlayCircle size={24} /> PLAY AGAIN
